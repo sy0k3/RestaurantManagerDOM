@@ -1,0 +1,213 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-image: url("../img/fondoPizarra.jpg");
+  color: orange;
+  display: flex;
+  flex-direction: column;
+  margin: 0; /* Añadido para quitar el margen predeterminado del body */
+  font-family: "Poppins", sans-serif;
+}
+
+.main {
+  background-color: #000000b3;
+  box-shadow: -1px 9px 31px 1px #000000bf;
+  margin: 2vh auto;
+  min-height: 100%; /* Añadido para asegurar que el contenido tenga al menos el 100% de altura */
+}
+
+.main-text {
+  color: #fafafa;
+  font-size: 1.5em;
+}
+
+.main-title {
+  color: orange;
+  font-size: 3em;
+  margin-top: 1vh;
+  margin-bottom: 0.5vh;
+}
+
+.navbar {
+  font-size: 2em;
+  margin-right: 4vw;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.navbar-brand img {
+  width: 15vw;
+  height: auto;
+  margin-left: 4vw;
+}
+
+.navbar-nav {
+  list-style: none;
+  display: flex;
+  flex-direction: row;
+}
+
+.nav-item {
+  padding: 1vh 2vw;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: orange;
+}
+
+.main-platoFront {
+  display: flex;
+  align-items: center;
+  margin: 1vh 2vw;
+}
+
+.platoFront img {
+  width: 50vw;
+  height: auto;
+  margin: 1vh 2vw;
+}
+
+img.imgPlato {
+  width: 14vw;
+  height: auto;
+}
+
+.main-otrosPlatos {
+  display: grid;
+  grid-template-columns: auto;
+  grid-template-rows: auto auto;
+  margin: 2vh 4vw;
+  margin-left: 1vh;
+}
+
+.otrosPlatos-contenedor {
+  display: flex;
+  justify-content: space-between;
+}
+
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 43vw;
+
+  color: #ffd700;
+  text-align: center;
+  padding: 5vh 0;
+}
+
+.footer a {
+  margin: auto 1vw;
+}
+
+/* Estilos para la sección Nosotros */
+.nosotros {
+  background-color: rgba(0, 0, 0, 0.7);
+  color: #fafafa;
+  padding: 4vh 6vw;
+  margin-bottom: 4vh;
+}
+
+.nosotros-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.nosotros-title {
+  color: orange;
+  font-size: 3em;
+  margin-bottom: 1.5vh;
+}
+
+.nosotros-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4vw;
+  align-items: center;
+}
+
+.nosotros-description {
+  font-size: 1.5em;
+}
+
+#imagen360 canvas {
+  width: 100%;
+  height: 50vh;
+}
+
+.main-reserva {
+  padding: 20px;
+}
+
+.reserva-form {
+  background-color: #ffffff;
+  border: 1px solid #dee2e6;
+  border-radius: 5px;
+  padding: 20px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+button {
+  background-color: #007bff;
+  color: #ffffff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+.footer {
+  color: #ffffff;
+  text-align: center;
+  padding: 20px;
+}
+
+.footer a {
+  color: #ffffff;
+  margin: 0 10px;
+}
+
+span {
+  color: orange;
+}
+
+.container.mt-5 {
+  color: black;
+}
+
+.carousel-inner img {
+  width: 100%;
+  max-height: 460px;
+}
+
+.carousel-inner {
+  height: 400px;
+}
+
+.carousel {
+  margin: auto 9vw;
+}
