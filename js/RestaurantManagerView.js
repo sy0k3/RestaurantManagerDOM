@@ -6,6 +6,9 @@ class RestaurantManagerView {
     this.menuAllg = document.getElementById("menu-allergens");
     this.menuMenu = document.getElementById("menu-menus");
     this.menuRest = document.getElementById("menu-restaurants");
+
+    // this.windows = [];
+    this.dishWind = null;
   }
 
   bindInit(handler) {
@@ -104,6 +107,26 @@ class RestaurantManagerView {
   bindRestaurants(handler) {
     this.menuRest.addEventListener("click", (event) => {
       handler();
+    });
+  }
+
+  bindDishCardInWindow(handler) {
+    const bCard = this.main.querySelector("button.btn");
+    bCard.addEventListener("click", (event) => {
+      if (!this.newWindow || this.newWindow.closed) {
+        this.newWindow = window.open(
+          "../element.html",
+          "DishDetails",
+          "width=800,height=600"
+        );
+        let eventBt = event;
+        this.newWindow.addEventListener("DOMContentLoaded", () => {
+          handler(eventBt.currentTarget.dataset.dish);
+        });
+      } else {
+        handler(event.currentTarget.dataset.dish);
+        this.newWindow.focus();
+      }
     });
   }
 
@@ -234,11 +257,35 @@ class RestaurantManagerView {
               <h5 class="card-title" style="font-size:1.8em;"><strong>${dish.name}</strong></h5>
               <p class="card-text">${dish.description}</p>
               <p class="card-text"><strong>Ingredientes:</strong> ${dish.ingredients}</p>
+              <button type="button" class="btn btn-warning" data-dish="${dish.name}">Abrir en nueva ventana</button>
             </div>
           </div>
         </div>
       </div>`
     );
+  }
+
+  showDishCardInWindow(dish) {
+    let mainNewWind = this.newWindow.document.querySelector("#main");
+    console.log(mainNewWind);
+    mainNewWind.insertAdjacentHTML(
+      "beforeend",
+      `<div class="card mb-3">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <img src="${dish.image}" class="img-fluid rounded-start" alt="${dish.name}">
+              </div>
+              <div class="col-md-8">
+                <div class="card-body px-4>
+                  <h5 class="card-title" style="font-size:1.8em;"><strong>${dish.name}</strong></h5>
+                  <p class="card-text">${dish.description}</p>
+                  <p class="card-text"><strong>Ingredientes:</strong> ${dish.ingredients}</p>
+                </div>
+              </div>
+            </div>
+          </div>`
+    );
+    // this.windows.push(newWindow);
   }
 
   showAllergens(allergens) {

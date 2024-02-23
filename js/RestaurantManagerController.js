@@ -247,6 +247,12 @@ class RestaurantManagerController {
   handleShowDishCard = (name) => {
     const dish = this[MODEL].getDish(name);
     this[VIEW].showDishCard(dish);
+    this[VIEW].bindDishCardInWindow(this.handleShowDishCardInWindow);
+  };
+
+  handleShowDishCardInWindow = (name) => {
+    const dish = this[MODEL].getDish(name);
+    this[VIEW].showDishCardInWindow(dish);
   };
 
   handleAllergen = () => {
