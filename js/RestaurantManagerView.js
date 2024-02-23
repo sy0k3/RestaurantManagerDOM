@@ -8,8 +8,7 @@ class RestaurantManagerView {
     this.menuRest = document.getElementById("menu-restaurants");
 
     this.windows = [];
-    this.dishWind = null;
-    let contWind = 0;
+    this.contWind = 0;
   }
 
   bindInit(handler) {
@@ -117,19 +116,23 @@ class RestaurantManagerView {
 
     const bCard = this.main.querySelector("button.btn");
     bCard.addEventListener("click", (event) => {
-      if (!this.newWindow || this.newWindow.closed) {
-        this.newWindow = window.open(
+      let newWindow = null;
+      let dishName = event.currentTarget.dataset.dish; // Almacenar el nombre del plato fuera del alcance del listener de carga
+
+      if (!newWindow || newWindow.closed) {
+        newWindow = window.open(
           "../element.html",
           name,
           "width=800,height=600, top=250, left=250, titlebar=yes, toolbar=no,menubar=no, location=no"
         );
-        this.newWindow.addEventListener("DOMContentLoaded", () => {
-          handler(event.currentTarget.dataset.dish);
+
+        newWindow.addEventListener("load", () => {
+          handler(dishName, newWindow); // Pasar la ventana como un argumento adicional al handler
         });
-        this.windows.push(this.newWindow);
+        this.windows.push(newWindow);
       } else {
-        handler(event.currentTarget.dataset.dish);
-        this.newWindow.focus();
+        handler(dishName, newWindow); // Pasar la ventana como un argumento adicional al handler
+        newWindow.focus();
       }
     });
   }
@@ -276,8 +279,8 @@ class RestaurantManagerView {
     this.main.append(container);
   }
 
-  showDishCardInWindow(dish) {
-    let mainNewWind = this.newWindow.document.querySelector("#main");
+  showDishCardInWindow(dish, newWindow) {
+    let mainNewWind = newWindow.document.querySelector("#main");
     const container = document.createElement("div");
     container.id = "dish-window";
     container.classList.add("my-4");
@@ -303,7 +306,6 @@ class RestaurantManagerView {
     );
 
     mainNewWind.append(container);
-    // this.windows.push(newWindow);
   }
 
   showAllergens(allergens) {

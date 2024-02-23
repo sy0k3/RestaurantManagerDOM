@@ -250,9 +250,9 @@ class RestaurantManagerController {
     this[VIEW].bindDishCardInWindow(this.handleShowDishCardInWindow);
   };
 
-  handleShowDishCardInWindow = (name) => {
+  handleShowDishCardInWindow = (name, newWindow) => {
     const dish = this[MODEL].getDish(name);
-    this[VIEW].showDishCardInWindow(dish);
+    this[VIEW].showDishCardInWindow(dish, newWindow);
   };
 
   handleAllergen = () => {
