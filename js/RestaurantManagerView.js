@@ -7,8 +7,9 @@ class RestaurantManagerView {
     this.menuMenu = document.getElementById("menu-menus");
     this.menuRest = document.getElementById("menu-restaurants");
 
-    // this.windows = [];
+    this.windows = [];
     this.dishWind = null;
+    let contWind = 0;
   }
 
   bindInit(handler) {
@@ -111,18 +112,21 @@ class RestaurantManagerView {
   }
 
   bindDishCardInWindow(handler) {
+    let name = "dish" + this.contWind;
+    this.contWind++;
+
     const bCard = this.main.querySelector("button.btn");
     bCard.addEventListener("click", (event) => {
       if (!this.newWindow || this.newWindow.closed) {
         this.newWindow = window.open(
           "../element.html",
-          "DishDetails",
-          "width=800,height=600"
+          name,
+          "width=800,height=600, top=250, left=250, titlebar=yes, toolbar=no,menubar=no, location=no"
         );
-        let eventBt = event;
         this.newWindow.addEventListener("DOMContentLoaded", () => {
-          handler(eventBt.currentTarget.dataset.dish);
+          handler(event.currentTarget.dataset.dish);
         });
+        this.windows.push(this.newWindow);
       } else {
         handler(event.currentTarget.dataset.dish);
         this.newWindow.focus();
@@ -245,7 +249,13 @@ class RestaurantManagerView {
 
   showDishCard(dish) {
     this.main.replaceChildren();
-    this.main.insertAdjacentHTML(
+    const container = document.createElement("div");
+    container.id = "dish-card";
+    container.classList.add("my-4");
+    container.classList.add("d-flex");
+    container.classList.add("justify-content-center");
+
+    container.insertAdjacentHTML(
       "beforeend",
       `<div class="card mb-3">
         <div class="row g-0">
@@ -263,12 +273,18 @@ class RestaurantManagerView {
         </div>
       </div>`
     );
+    this.main.append(container);
   }
 
   showDishCardInWindow(dish) {
     let mainNewWind = this.newWindow.document.querySelector("#main");
-    console.log(mainNewWind);
-    mainNewWind.insertAdjacentHTML(
+    const container = document.createElement("div");
+    container.id = "dish-window";
+    container.classList.add("my-4");
+    container.classList.add("d-flex");
+    container.classList.add("justify-content-center");
+
+    container.insertAdjacentHTML(
       "beforeend",
       `<div class="card mb-3">
             <div class="row g-0">
@@ -285,6 +301,8 @@ class RestaurantManagerView {
             </div>
           </div>`
     );
+
+    mainNewWind.append(container);
     // this.windows.push(newWindow);
   }
 
@@ -362,29 +380,5 @@ class RestaurantManagerView {
       </div>`
     );
   }
-
-  // showRestaurants(restaurants) {
-  //   this.categories.replaceChildren();
-  //   this.main.replaceChildren();
-  //   const container = document.createElement("div");
-  //   container.id = "restaurant-list";
-  //   container.classList.add("row");
-  //   container.classList.add("d-flex");
-  //   container.classList.add("justify-content-center");
-
-  //   for (const restaurant of restaurants) {
-  //     container.insertAdjacentHTML(
-  //       "beforeend",
-  //       `<div class="col-lg-3 col-md-6"><a data-restaurant="${restaurant.name}" href="#restaurant-list" style="text-decoration: none; color: orange; cursor: pointer">
-  //       <div class="cat-list-text">
-  //         <h2>${restaurant.name}</h2>
-  //         <div>${restaurant.description}</div>
-  //       </div>
-  //     </a>
-  //   </div>`
-  //     );
-  //   }
-  //   this.categories.append(container);
-  // }
 }
 export default RestaurantManagerView;
