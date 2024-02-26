@@ -1,3 +1,5 @@
+const EXCECUTE_HANDLER = Symbol("excecuteHandler");
+
 class RestaurantManagerView {
   constructor() {
     this.main = document.getElementsByTagName("main")[0];
@@ -9,6 +11,22 @@ class RestaurantManagerView {
 
     this.windows = [];
     this.contWind = 0;
+  }
+
+  [EXCECUTE_HANDLER](
+    handler,
+    handlerArguments,
+    scrollElement,
+    data,
+    url,
+    event
+  ) {
+    handler(...handlerArguments);
+    const scroll = document.querySelector(scrollElement);
+    console.log(scroll);
+    if (scroll) scroll.scrollIntoView();
+    history.pushState(data, null, url);
+    event.preventDefault();
   }
 
   bindInit(handler) {
@@ -135,6 +153,11 @@ class RestaurantManagerView {
         newWindow.focus();
       }
     });
+  }
+
+  bindCloseWindows() {
+    const bClose = document.getElementById("closeWind");
+    bClose.addEventListener("click", this.closeWindows);
   }
 
   showCategories(categories) {
@@ -382,5 +405,22 @@ class RestaurantManagerView {
       </div>`
     );
   }
+
+  showCloseWindowsOption() {
+    let navMenu = document.getElementById("navbarNav");
+    let listNav = navMenu.querySelector("ul.navbar-nav");
+    listNav.insertAdjacentHTML(
+      "beforeend",
+      `<li class="nav-item">
+      <a id="closeWind" class="nav-link" href="#">Cerrar Ventanas</a>
+    </li>`
+    );
+  }
+
+  closeWindows = () => {
+    for (const wind of this.windows) {
+      if (wind && !wind.closed) wind.close();
+    }
+  };
 }
 export default RestaurantManagerView;

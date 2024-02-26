@@ -212,6 +212,8 @@ class RestaurantManagerController {
     this[VIEW].bindDishesCategoryListInMenu(this.handleDishesCategoryList);
 
     this[VIEW].showRestaurantsInMenu(this[MODEL].restaurants);
+    this[VIEW].showCloseWindowsOption();
+    this[VIEW].bindCloseWindows();
   }
 
   onInit() {
