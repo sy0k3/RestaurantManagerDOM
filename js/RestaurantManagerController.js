@@ -226,6 +226,9 @@ class RestaurantManagerController {
     this[VIEW].bindAllergens(this.handleAllergen);
     this[VIEW].bindMenus(this.handleMenu);
     this[VIEW].bindRestaurants(this.handleRestaurant);
+
+    this[VIEW].showCategoriesInMenu(this[MODEL].categories);
+    this[VIEW].bindDishesCategoryListInMenu(this.handleDishesCategoryList);
   }
 
   handleInit = () => {

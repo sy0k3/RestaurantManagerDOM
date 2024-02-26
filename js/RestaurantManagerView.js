@@ -31,10 +31,24 @@ class RestaurantManagerView {
 
   bindInit(handler) {
     document.getElementById("init").addEventListener("click", (event) => {
-      handler();
+      this[EXCECUTE_HANDLER](
+        handler,
+        [],
+        "body",
+        { action: "init" },
+        "#",
+        event
+      );
     });
     document.getElementById("logo").addEventListener("click", (event) => {
-      handler();
+      this[EXCECUTE_HANDLER](
+        handler,
+        [],
+        "body",
+        { action: "init" },
+        "#",
+        event
+      );
     });
   }
 
@@ -42,7 +56,15 @@ class RestaurantManagerView {
     const links = this.categories.querySelectorAll("a");
     for (const link of links) {
       link.addEventListener("click", (event) => {
-        handler(event.currentTarget.dataset.category);
+        const { category } = event.currentTarget.dataset;
+        this[EXCECUTE_HANDLER](
+          handler,
+          [category],
+          "body",
+          { action: "dishesCategoryList", category },
+          "#category-list",
+          event
+        );
       });
     }
   }
@@ -51,7 +73,15 @@ class RestaurantManagerView {
     const links = this.menuCat.querySelectorAll("a");
     for (const link of links) {
       link.addEventListener("click", (event) => {
-        handler(event.currentTarget.dataset.category);
+        const { category } = event.currentTarget.dataset;
+        this[EXCECUTE_HANDLER](
+          handler,
+          [category],
+          "body",
+          { action: "dishesCategoryListInMenu", category },
+          "#category-list",
+          event
+        );
       });
     }
   }
@@ -60,7 +90,15 @@ class RestaurantManagerView {
     const cards = this.main.querySelectorAll("div.card");
     for (const card of cards) {
       card.addEventListener("click", (event) => {
-        handler(event.currentTarget.dataset.dish);
+        const { dish } = event.currentTarget.dataset;
+        this[EXCECUTE_HANDLER](
+          handler,
+          [dish],
+          "body",
+          { action: "dishCardListInMenu", dish },
+          "#category-list",
+          event
+        );
       });
     }
   }
@@ -69,7 +107,15 @@ class RestaurantManagerView {
     const cards = this.menuCat.querySelectorAll("a");
     for (const card of cards) {
       card.addEventListener("click", (event) => {
-        handler(event.currentTarget.dataset.dish);
+        const { dish } = event.currentTarget.dataset;
+        this[EXCECUTE_HANDLER](
+          handler,
+          [dish],
+          "body",
+          { action: "dishCardListInCategoryMenu", dish },
+          "#menu-categories-dish",
+          event
+        );
       });
     }
   }
@@ -78,7 +124,15 @@ class RestaurantManagerView {
     const links = this.categories.querySelectorAll("a");
     for (const link of links) {
       link.addEventListener("click", (event) => {
-        handler(event.currentTarget.dataset.allergen);
+        const { allergen } = event.currentTarget.dataset;
+        this[EXCECUTE_HANDLER](
+          handler,
+          [allergen],
+          "body",
+          { action: "dishesAllergenList", allergen },
+          "#allergen-list",
+          event
+        );
       });
     }
   }
@@ -87,7 +141,15 @@ class RestaurantManagerView {
     const links = this.categories.querySelectorAll("a");
     for (const link of links) {
       link.addEventListener("click", (event) => {
-        handler(event.currentTarget.dataset.menu);
+        const { menu } = event.currentTarget.dataset;
+        this[EXCECUTE_HANDLER](
+          handler,
+          [menu],
+          "body",
+          { action: "dishesMenuList", menu },
+          "#menu-list",
+          event
+        );
       });
     }
   }
@@ -96,7 +158,15 @@ class RestaurantManagerView {
     const links = this.menuRest.querySelectorAll("a");
     for (const link of links) {
       link.addEventListener("click", (event) => {
-        handler(event.currentTarget.dataset.restaurant);
+        const { restaurant } = event.currentTarget.dataset;
+        this[EXCECUTE_HANDLER](
+          handler,
+          [restaurant],
+          "body",
+          { action: "restaurantsInMenu", restaurant },
+          "#menu-restaurants",
+          event
+        );
       });
     }
   }
@@ -105,26 +175,55 @@ class RestaurantManagerView {
     const cards = this.main.querySelectorAll("img");
     for (const card of cards) {
       card.addEventListener("click", (event) => {
-        handler(event.currentTarget.dataset.dish);
+        const { dish } = event.currentTarget.dataset;
+        this[EXCECUTE_HANDLER](
+          handler,
+          [dish],
+          "body",
+          { action: "dishToCarousel", dish },
+          "#",
+          event
+        );
       });
     }
   }
 
   bindAllergens(handler) {
     this.menuAllg.addEventListener("click", (event) => {
-      handler();
+      this[EXCECUTE_HANDLER](
+        handler,
+        [],
+        "body",
+        { action: "showAllergens" },
+        "#",
+        event
+      );
     });
   }
 
   bindMenus(handler) {
     this.menuMenu.addEventListener("click", (event) => {
-      handler();
+      this[EXCECUTE_HANDLER](
+        handler,
+        [],
+        "body",
+        { action: "showMenus" },
+        "#",
+        event
+      );
     });
   }
 
   bindRestaurants(handler) {
     this.menuRest.addEventListener("click", (event) => {
-      handler();
+      this[EXCECUTE_HANDLER](
+        handler,
+        [],
+        "body",
+        { action: "showRestaurantsInMenu" },
+        "#",
+        event
+      );
     });
   }
 
