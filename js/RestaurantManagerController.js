@@ -212,6 +212,10 @@ class RestaurantManagerController {
     this[VIEW].bindDishesCategoryListInMenu(this.handleDishesCategoryList);
 
     this[VIEW].showRestaurantsInMenu(this[MODEL].restaurants);
+
+    this[VIEW].showAdminMenu();
+    this[VIEW].bindNewDish(this.handleNewDishForm);
+
     this[VIEW].showCloseWindowsOption();
     this[VIEW].bindCloseWindows();
   }
@@ -280,43 +284,33 @@ class RestaurantManagerController {
     this[VIEW].showCategoriesInMenu(this[MODEL].categories);
     this[VIEW].bindDishesCategoryListInMenu(this.handleDishesCategoryList);
 
-    for (const iterator of this[MODEL].restaurants) {
-      console.log(iterator);
-    }
     this[VIEW].showRestaurantsInMenu(this[MODEL].restaurants);
     this[VIEW].bindRestaurantsInMenu(this.handleShowRestaurantCard);
   };
 
   handleShowDishWithAllergen = (name) => {
     const allergen = this[MODEL].getAllergen(name);
-    console.log(allergen);
     const dishes = this[MODEL].getDishesWithAllergen(allergen, (a, b) =>
       a.name.localeCompare(b.name)
     );
-    console.log(dishes);
-    for (const iterator of dishes) {
-      console.log(iterator);
-    }
     this[VIEW].showDishesInCategory(dishes);
     this[VIEW].bindDishCardListInMenu(this.handleShowDishCard);
   };
 
   handleShowDishInMenu = (name) => {
     const menu = this[MODEL].getMenu(name);
-    console.log(menu);
     const dishes = this[MODEL].getDishesInMenu(menu);
-    console.log(dishes);
-    for (const iterator of dishes) {
-      console.log(iterator);
-    }
     this[VIEW].showDishesInCategory(dishes);
     this[VIEW].bindDishCardListInMenu(this.handleShowDishCard);
   };
 
   handleShowRestaurantCard = (name) => {
     const rest = this[MODEL].getRestaurant(name);
-    console.log(rest);
     this[VIEW].showRestaurantCard(rest);
+  };
+
+  handleNewDishForm = () => {
+    this[VIEW].showNewDishForm();
   };
 }
 export default RestaurantManagerController;

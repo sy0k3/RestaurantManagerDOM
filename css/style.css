@@ -211,3 +211,8 @@ span {
 .carousel {
   margin: auto 9vw;
 }
+
+.dropdown:hover > .dropdown-menu {
+  display: block;
+  margin-top: 0;
+}

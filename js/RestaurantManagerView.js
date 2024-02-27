@@ -40,16 +40,6 @@ class RestaurantManagerView {
         event
       );
     });
-    document.getElementById("logo").addEventListener("click", (event) => {
-      this[EXCECUTE_HANDLER](
-        handler,
-        [],
-        "body",
-        { action: "init" },
-        "#",
-        event
-      );
-    });
   }
 
   bindDishesCategoryList(handler) {
@@ -257,6 +247,13 @@ class RestaurantManagerView {
   bindCloseWindows() {
     const bClose = document.getElementById("closeWind");
     bClose.addEventListener("click", this.closeWindows);
+  }
+
+  bindNewDish(handler) {
+    const bNewDish = document.getElementById("adminNewDish");
+    bNewDish.addEventListener("click", (event) => {
+      handler();
+    });
   }
 
   showCategories(categories) {
@@ -521,5 +518,89 @@ class RestaurantManagerView {
       if (wind && !wind.closed) wind.close();
     }
   };
+
+  showAdminMenu() {
+    let navMenu = document.getElementById("navbarNav");
+    let listNav = navMenu.querySelector("ul.navbar-nav");
+    listNav.insertAdjacentHTML(
+      "beforeend",
+      `<li class="nav-item dropdown">
+      <a
+        class="nav-link dropdown-toggle"
+        href="#"
+        role="button"
+        data-bs-toggle="dropdown"
+        aria-expanded="false"
+      >
+        Administración
+      </a>
+      <ul id="menu-admin" class="dropdown-menu">
+      <li><a id="adminNewDish" class="dropdown-item" href="#adminNewDish">Añadir Plato</a></li>
+      </ul>
+    </li>`
+    );
+  }
+
+  showNewDishForm() {
+    this.main.replaceChildren();
+    this.categories.replaceChildren();
+
+    const container = document.createElement("div");
+    container.classList.add("container");
+    container.classList.add("my-3");
+    container.id = "new-dish";
+
+    container.insertAdjacentHTML(
+      "afterbegin",
+      '<h1 class="display-5">Nuevo plato</h1>'
+    );
+
+    container.insertAdjacentHTML(
+      "beforeend",
+      `<form name="fNewDish" role="form" class="row g-3" novalidate>
+        <div class="col-md-6 mb-3">
+          <label class="form-label" for="ndName">Nombre *</label>
+          <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-type"></i></span>
+            <input type="text" class="form-control" id="ndName" name="ndName" placeholder="Nombre del plato" value="" required>
+            <div class="invalid-feedback">El título es obligatorio.</div>
+            <div class="valid-feedback">Correcto.</div>
+          </div>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label" for="ndUrl">URL de la imagen </label>
+          <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-fileimage"></i></span>
+            <input type="url" class="form-control" id="ndUrl" name="ndUrl" placeholder="URL de la imagen" value="" required>
+            <div class="invalid-feedback">La URL no es válida.</div>
+            <div class="valid-feedback">Correcto.</div>
+          </div>
+       </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label" for="ndDescription">Descripción</label>
+          <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-bodytext"></i></span>
+            <input type="text" class="form-control" id="ndDescription" name="ndDescription" value="">
+            <div class="invalid-feedback"></div>
+            <div class="valid-feedback">Correcto.</div>
+          </div>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label" for="ndIngredients">Ingredientes</label>
+          <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-bodytext"></i></span>
+            <input type="text" class="form-control" id="ndIngredients" name="ndIngredients" placeholder="Ingredientes (Separados por comas ej: Arros,aceite,sal)" value="">
+            <div class="invalid-feedback">Ingredientes mal agregados.</div>
+            <div class="valid-feedback">Correcto.</div>
+          </div>
+        </div>
+        <div class="mb-12">
+          <button class="btn btn-primary" type="submit">Enviar</button>
+          <button class="btn btn-primary" type="reset">Cancelar</button>
+        </div>
+      </form>`
+    );
+    this.main.append(container);
+  }
 }
 export default RestaurantManagerView;
