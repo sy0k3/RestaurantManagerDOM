@@ -310,7 +310,42 @@ class RestaurantManagerController {
   };
 
   handleNewDishForm = () => {
-    this[VIEW].showNewDishForm();
+    this[VIEW].showNewDishForm(this[MODEL].categories, this[MODEL].allergens);
+    this[VIEW].bindNewDishForm(this.handleCreateDish);
+  };
+
+  handleCreateDish = (name, desc, ingredients, url, categories, allergens) => {
+    let done;
+    let error;
+    let dish;
+
+    try {
+      dish = new Dish(name, desc, ingredients, url);
+      console.log(name);
+      console.log(desc);
+      console.log(ingredients);
+      console.log(url);
+      this[MODEL].addDish(dish);
+
+      categories.forEach((name) => {
+        const category = this[MODEL].getCategory(name);
+        this[MODEL].assignCategoryToDish(category, dish);
+      });
+
+      if (allergens.length > 0) {
+        allergens.forEach((name) => {
+          const allergen = this[MODEL].getAllergen(name);
+          this[MODEL].assignAllergenToDish(allergen, dish);
+        });
+      }
+      done = true;
+    } catch (exception) {
+      done = false;
+      error = exception;
+    }
+
+    console.log(dish);
+    this[VIEW].showModalDish(done, dish, error);
   };
 }
 export default RestaurantManagerController;
