@@ -214,7 +214,7 @@ class RestaurantManagerController {
     this[VIEW].showRestaurantsInMenu(this[MODEL].restaurants);
 
     this[VIEW].showAdminMenu();
-    this[VIEW].bindNewDish(this.handleNewDishForm);
+    this[VIEW].bindAdminMenu(this.handleNewDishForm, this.handleRemoveDishForm);
 
     this[VIEW].showCloseWindowsOption();
     this[VIEW].bindCloseWindows();
@@ -346,6 +346,10 @@ class RestaurantManagerController {
 
     console.log(dish);
     this[VIEW].showModalDish(done, dish, error);
+  };
+
+  handleRemoveDishForm = () => {
+    this[VIEW].showRemoveDishForm(this[MODEL].dishes);
   };
 }
 export default RestaurantManagerController;

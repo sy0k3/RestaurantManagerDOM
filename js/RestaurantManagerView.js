@@ -251,10 +251,31 @@ class RestaurantManagerView {
     bClose.addEventListener("click", this.closeWindows);
   }
 
-  bindNewDish(handler) {
-    const bNewDish = document.getElementById("adminNewDish");
-    bNewDish.addEventListener("click", (event) => {
-      handler();
+  bindAdminMenu(hNewDish, hRemoveDish) {
+    const newDishLink = document.getElementById("lnewDish");
+    newDishLink.addEventListener("click", (event) => {
+      this[EXCECUTE_HANDLER](
+        hNewDish,
+        [],
+        "#new-dish",
+        { action: "newDish" },
+        "#",
+        event
+      );
+    });
+
+    const delCategoryLink = document.getElementById("ldelDish");
+    delCategoryLink.addEventListener("click", (event) => {
+      this[EXCECUTE_HANDLER](
+        hRemoveDish,
+        [],
+        "#remove-dish",
+        {
+          action: "removeDish",
+        },
+        "#",
+        event
+      );
     });
   }
 
@@ -541,7 +562,8 @@ class RestaurantManagerView {
         Administración
       </a>
       <ul id="menu-admin" class="dropdown-menu">
-      <li><a id="adminNewDish" class="dropdown-item" href="#adminNewDish">Añadir Plato</a></li>
+      <li><a id="lnewDish" class="dropdown-item" href="#lnewDish">Añadir Plato</a></li>
+      <li><a id="ldelDish" class="dropdown-item" href="#ldelDish">Remover Plato</a></li>
       </ul>
     </li>`
     );
@@ -716,6 +738,48 @@ class RestaurantManagerView {
     messageModalContainer.addEventListener("hidden.bs.modal", listener, {
       once: true,
     });
+  }
+
+  showRemoveDishForm(dishes) {
+    this.main.replaceChildren();
+    this.categories.replaceChildren();
+
+    const container = document.createElement("div");
+    container.classList.add("container");
+    container.classList.add("my-3");
+    container.id = "remove-category";
+
+    container.insertAdjacentHTML(
+      "afterbegin",
+      '<h1 class="display-5">Eliminar una categoría</h1>'
+    );
+
+    const row = document.createElement("div");
+    row.classList.add("row");
+
+    for (const dish of dishes) {
+      row.insertAdjacentHTML(
+        "beforeend",
+        `<div class="card mb-3">
+          <div class="row g-0">
+            <div class="col-md-4">
+              <img src="${dish.image}" class="img-fluid rounded-start" alt="${dish.name}">
+            </div>
+            <div class="col-md-8">
+              <div class="card-body px-4>
+                <h5 class="card-title" style="font-size:1.8em;"><strong>${dish.name}</strong></h5>
+                <p class="card-text">${dish.description}</p>
+                <p class="card-text"><strong>Ingredientes:</strong> ${dish.ingredients}</p>
+                <div><button class="btn btn-primary" data-dish="${dish.name}" type='button'>Eliminar</button></div>
+              </div>
+            </div>
+          </div>
+        </div>`
+      );
+    }
+
+    container.append(row);
+    this.main.append(container);
   }
 }
 export default RestaurantManagerView;
