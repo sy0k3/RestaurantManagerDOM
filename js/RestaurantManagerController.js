@@ -59,7 +59,7 @@ class RestaurantManagerController {
         "Azafrán",
         "Aceite de oliva",
       ],
-      "https://www.tapasmagazine.es/wp-content/uploads/2021/09/mejor-paella-del-mundo-1200x800.jpg"
+      "https://www.publico.es/uploads/2021/11/09/618a5de6435a0.jpeg"
     );
     let d3 = new Dish(
       "Sushi",
@@ -214,7 +214,11 @@ class RestaurantManagerController {
     this[VIEW].showRestaurantsInMenu(this[MODEL].restaurants);
 
     this[VIEW].showAdminMenu();
-    this[VIEW].bindAdminMenu(this.handleNewDishForm, this.handleRemoveDishForm);
+    this[VIEW].bindAdminMenu(
+      this.handleNewDishForm,
+      this.handleRemoveDishForm,
+      this.handleAdminCategoryForm
+    );
 
     this[VIEW].showCloseWindowsOption();
     this[VIEW].bindCloseWindows();
@@ -321,10 +325,6 @@ class RestaurantManagerController {
 
     try {
       dish = new Dish(name, desc, ingredients, url);
-      console.log(name);
-      console.log(desc);
-      console.log(ingredients);
-      console.log(url);
       this[MODEL].addDish(dish);
 
       categories.forEach((name) => {
@@ -343,13 +343,31 @@ class RestaurantManagerController {
       done = false;
       error = exception;
     }
-
-    console.log(dish);
     this[VIEW].showModalDish(done, dish, error);
   };
 
   handleRemoveDishForm = () => {
     this[VIEW].showRemoveDishForm(this[MODEL].dishes);
+    this[VIEW].bindRemoveDishForm(this.handleRemoveDish);
+  };
+
+  handleRemoveDish = (name) => {
+    let done;
+    let error;
+    let dish;
+    try {
+      dish = this[MODEL].getDish(name);
+      this[MODEL].removeDish(dish);
+      done = true;
+    } catch (exception) {
+      done = false;
+      error = exception;
+    }
+    this[VIEW].showModalRemovalDish(done, dish, error);
+  };
+
+  handleAdminCategoryForm = () => {
+    this[VIEW].showAdminCategoryForm(this[MODEL].categories);
   };
 }
 export default RestaurantManagerController;

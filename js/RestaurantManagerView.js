@@ -1,4 +1,4 @@
-import { newDishValidation } from "./validation.js";
+import { newDishValidation, newCategoryValidation } from "./validation.js";
 
 const EXCECUTE_HANDLER = Symbol("excecuteHandler");
 
@@ -251,7 +251,7 @@ class RestaurantManagerView {
     bClose.addEventListener("click", this.closeWindows);
   }
 
-  bindAdminMenu(hNewDish, hRemoveDish) {
+  bindAdminMenu(hNewDish, hRemoveDish, hAdminCategory) {
     const newDishLink = document.getElementById("lnewDish");
     newDishLink.addEventListener("click", (event) => {
       this[EXCECUTE_HANDLER](
@@ -264,8 +264,8 @@ class RestaurantManagerView {
       );
     });
 
-    const delCategoryLink = document.getElementById("ldelDish");
-    delCategoryLink.addEventListener("click", (event) => {
+    const delDishLink = document.getElementById("ldelDish");
+    delDishLink.addEventListener("click", (event) => {
       this[EXCECUTE_HANDLER](
         hRemoveDish,
         [],
@@ -277,10 +277,48 @@ class RestaurantManagerView {
         event
       );
     });
+
+    const adminCategoryLink = document.getElementById("ladminCategory");
+    adminCategoryLink.addEventListener("click", (event) => {
+      this[EXCECUTE_HANDLER](
+        hAdminCategory,
+        [],
+        "#admin-category",
+        {
+          action: "adminCategory",
+        },
+        "#",
+        event
+      );
+    });
   }
 
   bindNewDishForm(handler) {
     newDishValidation(handler);
+  }
+
+  bindRemoveDishForm(delHandler) {
+    const removeContainer = document.getElementById("remove-dish");
+    const buttons = removeContainer.getElementsByTagName("button");
+    for (const button of buttons) {
+      button.addEventListener("click", (event) => {
+        delHandler(event.currentTarget.dataset.dish);
+      });
+    }
+  }
+
+  bindNewCategoryForm(handler) {
+    newCategoryValidation(handler);
+  }
+
+  bindRemoveCategoryForm(delHandler) {
+    const removeContainer = document.getElementById("remove-category");
+    const buttons = removeContainer.getElementsByTagName("button");
+    for (const button of buttons) {
+      button.addEventListener("click", (event) => {
+        delHandler(event.currentTarget.dataset.category);
+      });
+    }
   }
 
   showCategories(categories) {
@@ -564,6 +602,7 @@ class RestaurantManagerView {
       <ul id="menu-admin" class="dropdown-menu">
       <li><a id="lnewDish" class="dropdown-item" href="#lnewDish">Añadir Plato</a></li>
       <li><a id="ldelDish" class="dropdown-item" href="#ldelDish">Remover Plato</a></li>
+      <li><a id="ladminCategory" class="dropdown-item" href="#ladminCategory">Administrar Categorias</a></li>
       </ul>
     </li>`
     );
@@ -714,7 +753,7 @@ class RestaurantManagerView {
     } else {
       body.insertAdjacentHTML(
         "afterbegin",
-        `<div class="error text-danger p-3"><i class="bi bi-exclamation-triangle"></i> El producto <strong>${dish.name}</strong> no ha podido crearse correctamente.</div>`
+        `<div class="error text-danger p-3"><i class="bi bi-exclamation-triangle"></i> El plato <strong>${dish.name}</strong> no ha podido crearse correctamente.</div>`
       );
     }
 
@@ -747,11 +786,11 @@ class RestaurantManagerView {
     const container = document.createElement("div");
     container.classList.add("container");
     container.classList.add("my-3");
-    container.id = "remove-category";
+    container.id = "remove-dish";
 
     container.insertAdjacentHTML(
       "afterbegin",
-      '<h1 class="display-5">Eliminar una categoría</h1>'
+      '<h1 class="display-5">Eliminar un plato</h1>'
     );
 
     const row = document.createElement("div");
@@ -770,7 +809,7 @@ class RestaurantManagerView {
                 <h5 class="card-title" style="font-size:1.8em;"><strong>${dish.name}</strong></h5>
                 <p class="card-text">${dish.description}</p>
                 <p class="card-text"><strong>Ingredientes:</strong> ${dish.ingredients}</p>
-                <div><button class="btn btn-primary" data-dish="${dish.name}" type='button'>Eliminar</button></div>
+                <button class="btn btn-primary" data-dish="${dish.name}" type='button'>Eliminar</button>
               </div>
             </div>
           </div>
@@ -780,6 +819,211 @@ class RestaurantManagerView {
 
     container.append(row);
     this.main.append(container);
+  }
+
+  showModalRemovalDish(done, dish, error) {
+    const messageModalContainer = document.getElementById("messageModal");
+    const messageModal = new bootstrap.Modal(messageModalContainer);
+
+    const title = document.getElementById("messageModalTitle");
+    title.innerHTML = "Plato eliminado";
+
+    const body = messageModalContainer.querySelector(".modal-body");
+    body.replaceChildren();
+
+    if (done) {
+      body.insertAdjacentHTML(
+        "afterbegin",
+        `<div class="p-3">El plato <strong>${dish.name}</strong> ha sido borrado correctamente.</div>`
+      );
+    } else {
+      body.insertAdjacentHTML(
+        "afterbegin",
+        `<div class="error text-danger p-3"><i class="bi bi-exclamation-triangle"></i> El plato <strong>${dish.name}</strong> no ha podido borrarse correctamente.</div>`
+      );
+    }
+
+    messageModal.show();
+
+    const listener = (event) => {
+      event.preventDefault();
+      if (done) {
+        const removeDish = document.getElementById("remove-dish");
+        const button = removeDish.querySelector(
+          `button.btn[data-dish="${dish.name}"]`
+        );
+        button.parentElement.parentElement.parentElement.parentElement.remove();
+      }
+    };
+    messageModalContainer.addEventListener("hidden.bs.modal", listener, {
+      once: true,
+    });
+  }
+
+  showAdminCategoryForm(categories) {
+    this.main.replaceChildren();
+    this.categories.replaceChildren();
+
+    const container = document.createElement("div");
+    container.classList.add("container");
+    container.classList.add("my-3");
+    container.id = "new-category";
+
+    container.insertAdjacentHTML(
+      "afterbegin",
+      '<h1 class="display-5">Nueva Categoría</h1>'
+    );
+
+    const form = document.createElement("form");
+    form.name = "fNewCategory";
+    form.setAttribute("role", "form");
+    form.setAttribute("novalidate", "");
+    form.classList.add("row");
+    form.classList.add("g-3");
+
+    form.insertAdjacentHTML(
+      "beforeend",
+      `<div class="col-md-6 mb-3">
+        <label class="form-label" for="ncName">Nombre *</label>
+        <div class="input-group">
+          <span class="input-group-text"><i class="bi bi-type"></i></span>
+          <input type="text" class="form-control" id="ncName" name="ncName" placeholder="Nombre de la Categoría" value="" required>
+          <div class="invalid-feedback">El nombre es obligatorio.</div>
+          <div class="valid-feedback">Correcto.</div>
+        </div>
+      </div>`
+    );
+
+    form.insertAdjacentHTML(
+      "beforeend",
+      `<div class="col-md-6 mb-3">
+        <label class="form-label" for="ncDescription">Descripción</label>
+        <div class="input-group">
+          <span class="input-group-text"><i class="bi bi-bodytext"></i></span>
+          <input type="text" class="form-control" id="ncDescription" name="ncDescription" value="">
+          <div class="invalid-feedback"></div>
+          <div class="valid-feedback">Correcto.</div>
+        </div>
+      </div>`
+    );
+
+    form.insertAdjacentHTML(
+      "beforeend",
+      `<div class="mb-12">
+          <button class="btn btn-primary" type="submit">Crear</button>
+          <button class="btn btn-primary" type="reset">Cancelar</button>
+        </div>`
+    );
+
+    container.append(form);
+    this.main.append(container);
+
+    const container2 = document.createElement("div");
+    container2.classList.add("container");
+    container2.classList.add("my-3");
+    container2.id = "remove-category";
+    container2.insertAdjacentHTML(
+      "afterbegin",
+      '<h1 class="display-5">Eliminar una categoría</h1>'
+    );
+    const row = document.createElement("div");
+    row.classList.add("row");
+    for (const category of categories) {
+      row.insertAdjacentHTML(
+        "beforeend",
+        `<div class="col-lg-3 col-md-6">
+          <div class="cat-list-text">
+            <a style="font-decoration:none; color:orange;" data-category="${category.name}" href="#categorylist"><h3>${category.name}</h3></a>
+          </div>
+          <div><button class="btn btn-primary" data-category="${category.name}" type='button'>Eliminar</button></div>
+        </div>`
+      );
+    }
+    container2.append(row);
+    this.main.append(container2);
+  }
+
+  showModalCategory(done, cat, error) {
+    const messageModalContainer = document.getElementById("messageModal");
+    const messageModal = new bootstrap.Modal(messageModalContainer);
+
+    const title = document.getElementById("messageModalTitle");
+    title.innerHTML = "Plato creado";
+
+    const body = messageModalContainer.querySelector(".modal-body");
+    body.replaceChildren();
+
+    if (done) {
+      body.insertAdjacentHTML(
+        "afterbegin",
+        `<div class="p-3">La categoría <strong>${cat.name}</strong> ha sido creado correctamente.</div>`
+      );
+    } else {
+      body.insertAdjacentHTML(
+        "afterbegin",
+        `<div class="error text-danger p-3"><i class="bi bi-exclamation-triangle"></i> La categoría <strong>${cat.name}</strong> no ha podido crearse correctamente.</div>`
+      );
+    }
+
+    messageModal.show();
+
+    const listener = (event) => {
+      event.preventDefault();
+      if (done) {
+        const formNewCat = document.getElementById("fNewCategory");
+        if (formNewCat) {
+          formNewCat.reset();
+        }
+      }
+      const ncNameInput = document.querySelector(
+        '#fNewCategory input[name="ncName"]'
+      );
+      if (ncNameInput) {
+        ncNameInput.focus();
+      }
+    };
+    messageModalContainer.addEventListener("hidden.bs.modal", listener, {
+      once: true,
+    });
+  }
+
+  showModalRemovalCategory(done, cat, error) {
+    const messageModalContainer = document.getElementById("messageModal");
+    const messageModal = new bootstrap.Modal(messageModalContainer);
+
+    const title = document.getElementById("messageModalTitle");
+    title.innerHTML = "Plato eliminado";
+
+    const body = messageModalContainer.querySelector(".modal-body");
+    body.replaceChildren();
+
+    if (done) {
+      body.insertAdjacentHTML(
+        "afterbegin",
+        `<div class="p-3">La categoría <strong>${cat.name}</strong> ha sido borrado correctamente.</div>`
+      );
+    } else {
+      body.insertAdjacentHTML(
+        "afterbegin",
+        `<div class="error text-danger p-3"><i class="bi bi-exclamation-triangle"></i> La categoría <strong>${cat.name}</strong> no ha podido borrarse correctamente.</div>`
+      );
+    }
+
+    messageModal.show();
+
+    const listener = (event) => {
+      event.preventDefault();
+      if (done) {
+        const removeCat = document.getElementById("remove-category");
+        const button = removeCat.querySelector(
+          `button.btn[data-dish="${cat.name}"]`
+        );
+        button.parentElement.parentElement.remove();
+      }
+    };
+    messageModalContainer.addEventListener("hidden.bs.modal", listener, {
+      once: true,
+    });
   }
 }
 export default RestaurantManagerView;

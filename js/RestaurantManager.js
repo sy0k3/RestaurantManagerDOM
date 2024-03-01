@@ -722,6 +722,33 @@ let RestaurantManager = (function () {
           let position = this.#getDishPosition(dish[i]);
           if (position !== -1) {
             this.#dishes.splice(position, 1);
+
+            // Eliminar el plato de todos los arreglos de platos dentro de cada categoría
+            for (let j = 0; j < this.#categories.length; j++) {
+              const category = this.#categories[j];
+              const dishIndex = this.#getDishInCategoryPosition(j, dish[i]);
+              if (dishIndex !== -1) {
+                category.dishes.splice(dishIndex, 1);
+              }
+            }
+
+            // Eliminar el plato de todos los arreglos de platos dentro de cada alergeno
+            for (let k = 0; k < this.#allergens.length; k++) {
+              const allergen = this.#allergens[k];
+              const dishIndex = this.#getDishInAllergenPosition(k, dish[i]);
+              if (dishIndex !== -1) {
+                allergen.dishes.splice(dishIndex, 1);
+              }
+            }
+
+            // Eliminar el plato de todos los arreglos de platos dentro de cada menu
+            for (let l = 0; l < this.#menus.length; l++) {
+              const menu = this.#menus[l];
+              const dishIndex = this.#getDishInMenuPosition(l, dish[i]);
+              if (dishIndex !== -1) {
+                menu.dishes.splice(dishIndex, 1);
+              }
+            }
           } else {
             throw new DishNotExistRestaurantManagerException("dish", dish[i]);
           }
