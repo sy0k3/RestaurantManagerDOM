@@ -368,6 +368,53 @@ class RestaurantManagerController {
 
   handleAdminCategoryForm = () => {
     this[VIEW].showAdminCategoryForm(this[MODEL].categories);
+    this[VIEW].bindNewCategoryForm(this.handleCreateCategory);
+    this[VIEW].bindRemoveCategoryForm(this.handleRemoveCategory);
+  };
+
+  handleCreateCategory = (name, desc) => {
+    let done;
+    let error;
+    let cat;
+
+    try {
+      cat = new Category(name, desc);
+      this[MODEL].addCategory(cat);
+
+      done = true;
+    } catch (exception) {
+      done = false;
+      error = exception;
+    }
+    this[VIEW].showModalCategory(done, cat, error);
+
+    this[VIEW].showAdminCategoryForm(this[MODEL].categories);
+    this[VIEW].bindNewCategoryForm(this.handleCreateCategory);
+    this[VIEW].bindRemoveCategoryForm(this.handleRemoveCategory);
+    this[VIEW].showCategoriesInMenu(this[MODEL].categories);
+    this[VIEW].bindDishesCategoryListInMenu(this.handleDishesCategoryList);
+  };
+
+  handleRemoveCategory = (name) => {
+    let done;
+    let error;
+    let cat;
+    try {
+      cat = this[MODEL].getCategory(name);
+      this[MODEL].removeCategory(cat);
+      done = true;
+    } catch (exception) {
+      done = false;
+      error = exception;
+    }
+    this[VIEW].showModalRemovalCategory(done, cat, error);
+
+    this[VIEW].showAdminCategoryForm(this[MODEL].categories);
+    this[VIEW].bindNewCategoryForm(this.handleCreateCategory);
+    this[VIEW].bindRemoveCategoryForm(this.handleRemoveCategory);
+
+    this[VIEW].showCategoriesInMenu(this[MODEL].categories);
+    this[VIEW].bindDishesCategoryListInMenu(this.handleDishesCategoryList);
   };
 }
 export default RestaurantManagerController;

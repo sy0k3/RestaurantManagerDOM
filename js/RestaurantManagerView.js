@@ -948,7 +948,7 @@ class RestaurantManagerView {
     const messageModal = new bootstrap.Modal(messageModalContainer);
 
     const title = document.getElementById("messageModalTitle");
-    title.innerHTML = "Plato creado";
+    title.innerHTML = "Categoría creada";
 
     const body = messageModalContainer.querySelector(".modal-body");
     body.replaceChildren();
@@ -992,7 +992,7 @@ class RestaurantManagerView {
     const messageModal = new bootstrap.Modal(messageModalContainer);
 
     const title = document.getElementById("messageModalTitle");
-    title.innerHTML = "Plato eliminado";
+    title.innerHTML = "Categoría eliminada";
 
     const body = messageModalContainer.querySelector(".modal-body");
     body.replaceChildren();
