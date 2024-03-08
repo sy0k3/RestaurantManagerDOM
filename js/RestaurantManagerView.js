@@ -1,4 +1,8 @@
-import { newDishValidation, newCategoryValidation } from "./validation.js";
+import {
+  newDishValidation,
+  newCategoryValidation,
+  newRestaurantValidation,
+} from "./validation.js";
 
 const EXCECUTE_HANDLER = Symbol("excecuteHandler");
 
@@ -251,7 +255,7 @@ class RestaurantManagerView {
     bClose.addEventListener("click", this.closeWindows);
   }
 
-  bindAdminMenu(hNewDish, hRemoveDish, hAdminCategory) {
+  bindAdminMenu(hNewDish, hRemoveDish, hAdminCategory, hNewRest) {
     const newDishLink = document.getElementById("lnewDish");
     newDishLink.addEventListener("click", (event) => {
       this[EXCECUTE_HANDLER](
@@ -291,6 +295,18 @@ class RestaurantManagerView {
         event
       );
     });
+
+    const newRestLink = document.getElementById("lnewRest");
+    newRestLink.addEventListener("click", (event) => {
+      this[EXCECUTE_HANDLER](
+        hNewRest,
+        [],
+        "#new-restaurant",
+        { action: "newRest" },
+        "#",
+        event
+      );
+    });
   }
 
   bindNewDishForm(handler) {
@@ -319,6 +335,10 @@ class RestaurantManagerView {
         delHandler(event.currentTarget.dataset.category);
       });
     }
+  }
+
+  bindNewRestForm(handler) {
+    newRestaurantValidation(handler);
   }
 
   showCategories(categories) {
@@ -555,13 +575,11 @@ class RestaurantManagerView {
     this.main.replaceChildren();
     this.main.insertAdjacentHTML(
       "beforeend",
-      `<div class="card" style="width: 18rem;" data-restaurant="${
-        restaurant.name
-      }">
+      `<div class="card" style="width: 18rem;" data-restaurant="${restaurant.name}">
         <div class="card-header h2">${restaurant.name}</div>
         <ul class="list-group list-group-flush">
           <li class="list-group-item">${restaurant.description}</li>
-          <li class="list-group-item">${restaurant.location.toString()}</li>
+          <li class="list-group-item">Latitud: ${restaurant.location.latitude}, Longitud: ${restaurant.location.longitude}</li>
         </ul>
       </div>`
     );
@@ -603,6 +621,7 @@ class RestaurantManagerView {
       <li><a id="lnewDish" class="dropdown-item" href="#lnewDish">Añadir Plato</a></li>
       <li><a id="ldelDish" class="dropdown-item" href="#ldelDish">Remover Plato</a></li>
       <li><a id="ladminCategory" class="dropdown-item" href="#ladminCategory">Administrar Categorias</a></li>
+      <li><a id="lnewRest" class="dropdown-item" href="#lnewRest">Añadir Restaurante</a></li>
       </ul>
     </li>`
     );
@@ -1019,6 +1038,135 @@ class RestaurantManagerView {
           `button.btn[data-dish="${cat.name}"]`
         );
         button.parentElement.parentElement.remove();
+      }
+    };
+    messageModalContainer.addEventListener("hidden.bs.modal", listener, {
+      once: true,
+    });
+  }
+
+  showNewRestForm() {
+    this.main.replaceChildren();
+    this.categories.replaceChildren();
+
+    const container = document.createElement("div");
+    container.classList.add("container");
+    container.classList.add("my-3");
+    container.id = "new-restaurant";
+
+    container.insertAdjacentHTML(
+      "afterbegin",
+      '<h1 class="display-5">Nuevo restaurante</h1>'
+    );
+
+    const form = document.createElement("form");
+    form.name = "fNewRest";
+    form.setAttribute("role", "form");
+    form.setAttribute("novalidate", "");
+    form.classList.add("row");
+    form.classList.add("g-3");
+
+    form.insertAdjacentHTML(
+      "beforeend",
+      `<div class="col-md-6 mb-3">
+        <label class="form-label" for="nrName">Nombre *</label>
+        <div class="input-group">
+          <span class="input-group-text"><i class="bi bi-type"></i></span>
+          <input type="text" class="form-control" id="nrName" name="nrName" placeholder="Nombre del restaurante" value="" required>
+          <div class="invalid-feedback">El título es obligatorio.</div>
+          <div class="valid-feedback">Correcto.</div>
+        </div>
+      </div>`
+    );
+
+    form.insertAdjacentHTML(
+      "beforeend",
+      `<div class="col-md-6 mb-3">
+        <label class="form-label" for="nrDescription">Descripción</label>
+        <div class="input-group">
+          <span class="input-group-text"><i class="bi bi-bodytext"></i></span>
+          <input type="text" class="form-control" id="nrDescription" name="nrDescription" value="">
+          <div class="invalid-feedback"></div>
+          <div class="valid-feedback">Correcto.</div>
+        </div>
+      </div>`
+    );
+
+    form.insertAdjacentHTML(
+      "beforeend",
+      `<div class="col-md-6 mb-3">
+        <label class="form-label" for="nrLatitude">Latitud</label>
+        <div class="input-group">
+          <span class="input-group-text"><i class="bi bi-bodytext"></i></span>
+          <input type="text" class="form-control" id="nrLatitude" name="nrLatitude" placeholder="Latitud (-90 hasta 90)" value="">
+          <div class="invalid-feedback">Latitud mal agregada.</div>
+          <div class="valid-feedback">Correcto.</div>
+        </div>
+      </div>`
+    );
+
+    form.insertAdjacentHTML(
+      "beforeend",
+      `<div class="col-md-6 mb-3">
+        <label class="form-label" for="nrLongitude">Longitud</label>
+        <div class="input-group">
+          <span class="input-group-text"><i class="bi bi-bodytext"></i></span>
+          <input type="text" class="form-control" id="nrLongitude" name="nrLongitude" placeholder="Longitud (-180 hasta 180)" value="">
+          <div class="invalid-feedback">Longitud mal agregada.</div>
+          <div class="valid-feedback">Correcto.</div>
+        </div>
+      </div>`
+    );
+
+    form.insertAdjacentHTML(
+      "beforeend",
+      `<div class="mb-12">
+          <button class="btn btn-primary" type="submit">Añadir</button>
+          <button class="btn btn-primary" type="reset">Cancelar</button>
+        </div>`
+    );
+
+    container.append(form);
+    this.main.append(container);
+  }
+
+  showModalRestaurant(done, rest, error) {
+    const messageModalContainer = document.getElementById("messageModal");
+    const messageModal = new bootstrap.Modal(messageModalContainer);
+
+    const title = document.getElementById("messageModalTitle");
+    title.innerHTML = "Restaurante creado";
+
+    const body = messageModalContainer.querySelector(".modal-body");
+    body.replaceChildren();
+
+    if (done) {
+      body.insertAdjacentHTML(
+        "afterbegin",
+        `<div class="p-3">El restaurante <strong>${rest.name}</strong> ha sido creado correctamente.</div>`
+      );
+    } else {
+      body.insertAdjacentHTML(
+        "afterbegin",
+        `<div class="error text-danger p-3"><i class="bi bi-exclamation-triangle"></i> El restaurante <strong>${rest.name}</strong> no ha podido crearse correctamente.</div>`
+      );
+    }
+
+    messageModal.show();
+
+    const listener = (event) => {
+      event.preventDefault();
+      if (done) {
+        const formNewRest = document.getElementById("fNewRest");
+        if (formNewRest) {
+          formNewRest.reset();
+        }
+      }
+      const nrNameInput = document.querySelector(
+        '#fNewRest input[name="nrName"]'
+      );
+      if (nrNameInput) {
+        nrNameInput.focus();
       }
     };
     messageModalContainer.addEventListener("hidden.bs.modal", listener, {

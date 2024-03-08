@@ -212,12 +212,14 @@ class RestaurantManagerController {
     this[VIEW].bindDishesCategoryListInMenu(this.handleDishesCategoryList);
 
     this[VIEW].showRestaurantsInMenu(this[MODEL].restaurants);
+    this[VIEW].bindRestaurants(this.handleRestaurant);
 
     this[VIEW].showAdminMenu();
     this[VIEW].bindAdminMenu(
       this.handleNewDishForm,
       this.handleRemoveDishForm,
-      this.handleAdminCategoryForm
+      this.handleAdminCategoryForm,
+      this.handleNewRestForm
     );
 
     this[VIEW].showCloseWindowsOption();
@@ -233,7 +235,6 @@ class RestaurantManagerController {
 
     this[VIEW].bindAllergens(this.handleAllergen);
     this[VIEW].bindMenus(this.handleMenu);
-    this[VIEW].bindRestaurants(this.handleRestaurant);
 
     this[VIEW].showCategoriesInMenu(this[MODEL].categories);
     this[VIEW].bindDishesCategoryListInMenu(this.handleDishesCategoryList);
@@ -344,11 +345,17 @@ class RestaurantManagerController {
       error = exception;
     }
     this[VIEW].showModalDish(done, dish, error);
+
+    this[VIEW].showCategoriesInMenu(this[MODEL].categories);
+    this[VIEW].bindDishesCategoryListInMenu(this.handleDishesCategoryList);
   };
 
   handleRemoveDishForm = () => {
     this[VIEW].showRemoveDishForm(this[MODEL].dishes);
     this[VIEW].bindRemoveDishForm(this.handleRemoveDish);
+
+    this[VIEW].showCategoriesInMenu(this[MODEL].categories);
+    this[VIEW].bindDishesCategoryListInMenu(this.handleDishesCategoryList);
   };
 
   handleRemoveDish = (name) => {
@@ -415,6 +422,31 @@ class RestaurantManagerController {
 
     this[VIEW].showCategoriesInMenu(this[MODEL].categories);
     this[VIEW].bindDishesCategoryListInMenu(this.handleDishesCategoryList);
+  };
+
+  handleNewRestForm = () => {
+    this[VIEW].showNewRestForm();
+    this[VIEW].bindNewRestForm(this.handleCreateRest);
+  };
+
+  handleCreateRest = (name, desc, latitude, longitude) => {
+    let done;
+    let error;
+    let rest;
+
+    try {
+      rest = new Restaurant(name, desc, new Coordinate(latitude, longitude));
+      this[MODEL].addRestaurant(rest);
+
+      done = true;
+    } catch (exception) {
+      done = false;
+      error = exception;
+    }
+    this[VIEW].showModalRestaurant(done, rest, error);
+
+    this[VIEW].showRestaurantsInMenu(this[MODEL].restaurants);
+    this[VIEW].bindRestaurants(this.handleRestaurant);
   };
 }
 export default RestaurantManagerController;
