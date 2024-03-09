@@ -2,6 +2,7 @@ import {
   newDishValidation,
   newCategoryValidation,
   newRestaurantValidation,
+  assignDishToMenuValidation,
 } from "./validation.js";
 
 const EXCECUTE_HANDLER = Symbol("excecuteHandler");
@@ -255,7 +256,7 @@ class RestaurantManagerView {
     bClose.addEventListener("click", this.closeWindows);
   }
 
-  bindAdminMenu(hNewDish, hRemoveDish, hAdminCategory, hNewRest) {
+  bindAdminMenu(hNewDish, hRemoveDish, hAdminMenu, hAdminCategory, hNewRest) {
     const newDishLink = document.getElementById("lnewDish");
     newDishLink.addEventListener("click", (event) => {
       this[EXCECUTE_HANDLER](
@@ -276,6 +277,20 @@ class RestaurantManagerView {
         "#remove-dish",
         {
           action: "removeDish",
+        },
+        "#",
+        event
+      );
+    });
+
+    const adminMenusLink = document.getElementById("ladminMenu");
+    adminMenusLink.addEventListener("click", (event) => {
+      this[EXCECUTE_HANDLER](
+        hAdminMenu,
+        [],
+        "#admin-menu",
+        {
+          action: "adminMenu",
         },
         "#",
         event
@@ -339,6 +354,10 @@ class RestaurantManagerView {
 
   bindNewRestForm(handler) {
     newRestaurantValidation(handler);
+  }
+
+  bindAdminMenuForm(handler) {
+    assignDishToMenuValidation(handler);
   }
 
   showCategories(categories) {
@@ -620,6 +639,7 @@ class RestaurantManagerView {
       <ul id="menu-admin" class="dropdown-menu">
       <li><a id="lnewDish" class="dropdown-item" href="#lnewDish">Añadir Plato</a></li>
       <li><a id="ldelDish" class="dropdown-item" href="#ldelDish">Remover Plato</a></li>
+      <li><a id="ladminMenu" class="dropdown-item" href="#ladminMenu">Administrar Menus</a></li>
       <li><a id="ladminCategory" class="dropdown-item" href="#ladminCategory">Administrar Categorias</a></li>
       <li><a id="lnewRest" class="dropdown-item" href="#lnewRest">Añadir Restaurante</a></li>
       </ul>
@@ -1167,6 +1187,125 @@ class RestaurantManagerView {
       );
       if (nrNameInput) {
         nrNameInput.focus();
+      }
+    };
+    messageModalContainer.addEventListener("hidden.bs.modal", listener, {
+      once: true,
+    });
+  }
+
+  showAdminMenuForm(menus, dishes) {
+    this.main.replaceChildren();
+    this.categories.replaceChildren();
+
+    const container = document.createElement("div");
+    container.classList.add("container");
+    container.classList.add("my-3");
+    container.id = "assign-dishes-to-menu";
+
+    container.insertAdjacentHTML(
+      "afterbegin",
+      '<h1 class="display-5">Asignar plato/s a un menú</h1>'
+    );
+
+    const form = document.createElement("form");
+    form.name = "fAssignDishToMenu";
+    form.setAttribute("role", "form");
+    form.setAttribute("novalidate", "");
+    form.classList.add("row");
+    form.classList.add("g-3");
+
+    form.insertAdjacentHTML(
+      "beforeend",
+      `<div class="col-md-6 mb-3">
+				<label class="form-label" for="nmMenu">Menús *</label>
+				<div class="input-group">
+					<label class="input-group-text" for="nmMenu"><i class="bi bi-card-checklist"></i></label>
+					<select class="form-select" name="nmMenu" id="nmMenu" required>
+          <option value="">- Selecciona un menú -</option>
+					</select>
+					<div class="invalid-feedback">Debes seleccionar un menú.</div>
+					<div class="valid-feedback">Correcto.</div>
+				</div>
+			</div>`
+    );
+    const nmMenu = form.querySelector("#nmMenu");
+    for (const menu of menus) {
+      nmMenu.insertAdjacentHTML(
+        "beforeend",
+        `<option value="${menu.name}">${menu.name}</option>`
+      );
+    }
+
+    form.insertAdjacentHTML(
+      "beforeend",
+      `<div class="col-md-6 mb-3">
+				<label class="form-label" for="nmDish">Platos *</label>
+				<div class="input-group">
+					<label class="input-group-text" for="nmDish"><i class="bi bi-card-checklist"></i></label>
+					<select class="form-select" name="nmDish" id="nmDish" multiple required>
+					</select>
+					<div class="invalid-feedback">Debes asignar minimo un plato.</div>
+					<div class="valid-feedback">Correcto.</div>
+				</div>
+			</div>`
+    );
+    const nmDish = form.querySelector("#nmDish");
+    for (const dish of dishes) {
+      nmDish.insertAdjacentHTML(
+        "beforeend",
+        `<option value="${dish.name}">${dish.name}</option>`
+      );
+    }
+
+    form.insertAdjacentHTML(
+      "beforeend",
+      `<div class="mb-12">
+          <button class="btn btn-primary" type="submit">Asignar Plato/s</button>
+        </div>`
+    );
+
+    container.append(form);
+    this.main.append(container);
+  }
+
+  showModalAssignDishToMenu(done, menu, error) {
+    const messageModalContainer = document.getElementById("messageModal");
+    const messageModal = new bootstrap.Modal(messageModalContainer);
+
+    const title = document.getElementById("messageModalTitle");
+    title.innerHTML = "Platos asignados al menú";
+
+    const body = messageModalContainer.querySelector(".modal-body");
+    body.replaceChildren();
+
+    if (done) {
+      body.insertAdjacentHTML(
+        "afterbegin",
+        `<div class="p-3">Platos asigandos al menú <strong>${menu.name}</strong> correctamente.</div>`
+      );
+    } else {
+      body.insertAdjacentHTML(
+        "afterbegin",
+        `<div class="error text-danger p-3"><i class="bi bi-exclamation-triangle"></i> Los platos no han podido ser asignados al menú <strong>${menu.name}</strong>correctamente.</div>`
+      );
+    }
+
+    messageModal.show();
+
+    const listener = (event) => {
+      event.preventDefault();
+      if (done) {
+        const formNewRest = document.getElementById("fAssignDishToMenu");
+        if (formNewRest) {
+          formNewRest.reset();
+        }
+      }
+      const nmNameInput = document.querySelector(
+        '#fAssignDishToMenu select[name="nmMenu"]'
+      );
+      if (nmNameInput) {
+        nmNameInput.focus();
       }
     };
     messageModalContainer.addEventListener("hidden.bs.modal", listener, {

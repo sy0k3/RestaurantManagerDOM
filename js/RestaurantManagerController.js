@@ -218,6 +218,7 @@ class RestaurantManagerController {
     this[VIEW].bindAdminMenu(
       this.handleNewDishForm,
       this.handleRemoveDishForm,
+      this.handlerAdminMenu,
       this.handleAdminCategoryForm,
       this.handleNewRestForm
     );
@@ -447,6 +448,33 @@ class RestaurantManagerController {
 
     this[VIEW].showRestaurantsInMenu(this[MODEL].restaurants);
     this[VIEW].bindRestaurants(this.handleRestaurant);
+  };
+
+  handlerAdminMenu = () => {
+    this[VIEW].showAdminMenuForm(this[MODEL].menus, this[MODEL].dishes);
+    this[VIEW].bindAdminMenuForm(this.handleAssignDishToMenu);
+  };
+
+  handleAssignDishToMenu = (name, dishes) => {
+    let done;
+    let error;
+    let menu;
+
+    try {
+      menu = this[MODEL].getMenu(name);
+      console.log(menu);
+
+      dishes.forEach((name) => {
+        const dish = this[MODEL].getDish(name);
+        this[MODEL].assignDishToMenu(menu, dish);
+      });
+
+      done = true;
+    } catch (exception) {
+      done = false;
+      error = exception;
+    }
+    this[VIEW].showModalAssignDishToMenu(done, menu, error);
   };
 }
 export default RestaurantManagerController;

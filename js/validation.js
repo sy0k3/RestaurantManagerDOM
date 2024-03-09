@@ -296,4 +296,50 @@ function newRestaurantValidation(handler) {
   form.nrLongitude.addEventListener("change", defaultCheckElement);
 }
 
-export { newDishValidation, newCategoryValidation, newRestaurantValidation };
+function assignDishToMenuValidation(handler) {
+  const form = document.forms.fAssignDishToMenu;
+  form.setAttribute("novalidate", "");
+
+  form.addEventListener("submit", function (event) {
+    let isValid = true;
+    let firstInvalidElement = null;
+
+    // Validación de categorías
+    if (!this.nmDish.checkValidity()) {
+      isValid = false;
+      showFeedBack(this.nmDish, false);
+      if (!firstInvalidElement) firstInvalidElement = this.nmDish;
+    } else {
+      showFeedBack(this.nmDish, true);
+    }
+
+    // Validación de nombre
+    if (this.nmMenu.value == "") {
+      isValid = false;
+      showFeedBack(this.nmMenu, false);
+      if (!firstInvalidElement) firstInvalidElement = this.nmMenu;
+    } else {
+      showFeedBack(this.nmMenu, true);
+    }
+
+    // Si hay algún error de validación, enfocar en el primer elemento inválido
+    if (!isValid) {
+      firstInvalidElement.focus();
+    } else {
+      const dishes = [...this.nmDish.selectedOptions].map(
+        (option) => option.value
+      );
+      handler(this.nmMenu.value, dishes);
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+  });
+}
+
+export {
+  newDishValidation,
+  newCategoryValidation,
+  newRestaurantValidation,
+  assignDishToMenuValidation,
+};
