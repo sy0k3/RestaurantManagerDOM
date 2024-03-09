@@ -515,6 +515,18 @@ let RestaurantManager = (function () {
         };
       }
 
+      getCategories() {
+        // referencia para habilitar el closure en el objeto
+        let array = this.#categories;
+        return {
+          *[Symbol.iterator]() {
+            for (let i = 0; i < array.length; i++) {
+              yield array[i];
+            }
+          },
+        };
+      }
+
       //Devuelve un iterator de los menus del gestor
       get menus() {
         // referencia para habilitar el closure en el objeto

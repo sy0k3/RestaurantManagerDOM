@@ -5,6 +5,7 @@ import {
   assignDishToMenuValidation,
   deassignDishToMenuValidation,
   changeDishesInMenuValidation,
+  modifyCatOfDishValidation,
 } from "./validation.js";
 
 const EXCECUTE_HANDLER = Symbol("excecuteHandler");
@@ -258,7 +259,14 @@ class RestaurantManagerView {
     bClose.addEventListener("click", this.closeWindows);
   }
 
-  bindAdminMenu(hNewDish, hRemoveDish, hAdminMenu, hAdminCategory, hNewRest) {
+  bindAdminMenu(
+    hNewDish,
+    hRemoveDish,
+    hAdminMenu,
+    hAdminCategory,
+    hNewRest,
+    hModCat
+  ) {
     const newDishLink = document.getElementById("lnewDish");
     newDishLink.addEventListener("click", (event) => {
       this[EXCECUTE_HANDLER](
@@ -324,6 +332,18 @@ class RestaurantManagerView {
         event
       );
     });
+
+    const modCatLink = document.getElementById("lmodCat");
+    modCatLink.addEventListener("click", (event) => {
+      this[EXCECUTE_HANDLER](
+        hModCat,
+        [],
+        "#modify-categories",
+        { action: "modCat" },
+        "#",
+        event
+      );
+    });
   }
 
   bindNewDishForm(handler) {
@@ -362,6 +382,10 @@ class RestaurantManagerView {
     assignDishToMenuValidation(handlerAssign);
     deassignDishToMenuValidation(handlerDeassign);
     changeDishesInMenuValidation(handlerChange);
+  }
+
+  bindModCatForm(handler) {
+    modifyCatOfDishValidation(handler);
   }
 
   showCategories(categories) {
@@ -646,6 +670,7 @@ class RestaurantManagerView {
       <li><a id="ladminMenu" class="dropdown-item" href="#ladminMenu">Administrar Menus</a></li>
       <li><a id="ladminCategory" class="dropdown-item" href="#ladminCategory">Administrar Categorias</a></li>
       <li><a id="lnewRest" class="dropdown-item" href="#lnewRest">Añadir Restaurante</a></li>
+      <li><a id="lmodCat" class="dropdown-item" href="#lmodCat">Modificar Categorías de Platos</a></li>
       </ul>
     </li>`
     );
@@ -1562,6 +1587,181 @@ class RestaurantManagerView {
       );
       if (changeMenuInput) {
         changeMenuInput.focus();
+      }
+    };
+    messageModalContainer.addEventListener("hidden.bs.modal", listener, {
+      once: true,
+    });
+  }
+
+  showModCategoriesForm(dishes, catWithDish) {
+    this.main.replaceChildren();
+    this.categories.replaceChildren();
+
+    const container = document.createElement("div");
+    container.classList.add("container");
+    container.classList.add("my-3");
+    container.id = "modify-categories-to-dish";
+
+    container.insertAdjacentHTML(
+      "afterbegin",
+      '<h1 class="display-5">Modificar categorias de un plato</h1>'
+    );
+
+    const form = document.createElement("form");
+    form.name = "fModifyCatOfDish";
+    form.setAttribute("role", "form");
+    form.setAttribute("novalidate", "");
+    form.classList.add("row");
+    form.classList.add("g-3");
+
+    form.insertAdjacentHTML(
+      "beforeend",
+      `<div class="col-md-12 mb-3">
+				<label class="form-label" for="modDish">Platos *</label>
+				<div class="input-group">
+					<label class="input-group-text" for="modDish"><i class="bi bi-card-checklist"></i></label>
+					<select class="form-select" name="modDish" id="modDish" required>
+          <option value="">- Selecciona un plato -</option>
+					</select>
+					<div class="invalid-feedback">Debes seleccionar un plato.</div>
+					<div class="valid-feedback">Correcto.</div>
+				</div>
+			</div>`
+    );
+    const modDish = form.querySelector("#modDish");
+    for (const dish of dishes) {
+      modDish.insertAdjacentHTML(
+        "beforeend",
+        `<option value="${dish.name}">${dish.name}</option>`
+      );
+    }
+
+    form.insertAdjacentHTML(
+      "beforeend",
+      `<div class="col-md-6 mb-3">
+				<label class="form-label" for="modRemCat">Categorías del plato (seleccionar para quitar) *</label>
+				<div class="input-group">
+					<label class="input-group-text" for="modRemCat"><i class="bi bi-card-checklist"></i></label>
+					<select class="form-select" name="modRemCat" id="modRemCat" multiple required>
+					</select>
+					<div class="invalid-feedback">Debes asignar minimo un plato.</div>
+					<div class="valid-feedback">Correcto.</div>
+				</div>
+			</div>`
+    );
+    const modRemCat = form.querySelector("#modRemCat");
+
+    modDish.addEventListener("change", () => {
+      const selectedDishName = modDish.value;
+      if (selectedDishName) {
+        // Limpiar el contenido actual del select de platos del menú
+        modRemCat.innerHTML = "";
+        // Buscar el plato seleccionado en la lista de menús
+        for (const catItem of catWithDish) {
+          for (const dishItem of catItem.dishes) {
+            if (dishItem.name === selectedDishName) {
+              modRemCat.insertAdjacentHTML(
+                "beforeend",
+                `<option value="${catItem.category.name}">${catItem.category.name}</option>`
+              );
+            }
+          }
+        }
+      }
+    });
+
+    form.insertAdjacentHTML(
+      "beforeend",
+      `<div class="col-md-6 mb-3">
+				<label class="form-label" for="modAddCat">Categorías del plato restantes (seleccionar para añadir) *</label>
+				<div class="input-group">
+					<label class="input-group-text" for="modAddCat"><i class="bi bi-card-checklist"></i></label>
+					<select class="form-select" name="modAddCat" id="modAddCat" multiple required>
+					</select>
+					<div class="invalid-feedback">Debes asignar minimo un plato.</div>
+					<div class="valid-feedback">Correcto.</div>
+				</div>
+			</div>`
+    );
+    const modAddCat = form.querySelector("#modAddCat");
+
+    modDish.addEventListener("change", () => {
+      const selectedDishName = modDish.value;
+      if (selectedDishName) {
+        // Limpiar el contenido actual del select de platos del menú
+        modRemCat.innerHTML = "";
+        modAddCat.innerHTML = "";
+        // Buscar el plato seleccionado en la lista de menús
+        for (const catItem of catWithDish) {
+          const isDishInCategory = catItem.dishes.some(
+            (dish) => dish.name === selectedDishName
+          );
+          if (isDishInCategory) {
+            // Si el plato está en la categoría actual, insertarlo en el select de categorías
+            modRemCat.insertAdjacentHTML(
+              "beforeend",
+              `<option value="${catItem.category.name}">${catItem.category.name}</option>`
+            );
+          } else {
+            // Si el plato no está en la categoría actual, insertarlo en el select de categorías restantes
+            modAddCat.insertAdjacentHTML(
+              "beforeend",
+              `<option value="${catItem.category.name}">${catItem.category.name}</option>`
+            );
+          }
+        }
+      }
+    });
+
+    form.insertAdjacentHTML(
+      "beforeend",
+      `<div class="mb-12">
+          <button class="btn btn-primary" type="submit">Modificar</button>
+        </div>`
+    );
+
+    container.append(form);
+    this.main.append(container);
+  }
+
+  showModalModifyCatOfDish(done, dish, error) {
+    const messageModalContainer = document.getElementById("messageModal");
+    const messageModal = new bootstrap.Modal(messageModalContainer);
+
+    const title = document.getElementById("messageModalTitle");
+    title.innerHTML = "Categorias modificadas";
+
+    const body = messageModalContainer.querySelector(".modal-body");
+    body.replaceChildren();
+
+    if (done) {
+      body.insertAdjacentHTML(
+        "afterbegin",
+        `<div class="p-3">Las categorias del plato <strong>${dish.name}</strong> han sido modificadas correctamente.</div>`
+      );
+    } else {
+      body.insertAdjacentHTML(
+        "afterbegin",
+        `<div class="error text-danger p-3"><i class="bi bi-exclamation-triangle"></i> Las categorias del plato <strong>${dish.name}</strong> no han sido modificadas correctamente.</div>`
+      );
+    }
+
+    messageModal.show();
+
+    const listener = (event) => {
+      event.preventDefault();
+      if (done) {
+        const formModCatOfDish = document.getElementById("fModifyCatOfDish");
+        if (formModCatOfDish) {
+          formModCatOfDish.reset();
+        }
+      }
+      const modDishInput = document.querySelector(
+        '#fModifyCatOfDish select[name="modDish"]'
+      );
+      if (modDishInput) {
+        modDishInput.focus();
       }
     };
     messageModalContainer.addEventListener("hidden.bs.modal", listener, {

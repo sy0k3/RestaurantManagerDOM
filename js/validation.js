@@ -422,6 +422,52 @@ function changeDishesInMenuValidation(handler) {
   });
 }
 
+function modifyCatOfDishValidation(handler) {
+  const form = document.forms.fModifyCatOfDish;
+  form.setAttribute("novalidate", "");
+
+  form.addEventListener("submit", function (event) {
+    let isValid = true;
+    let firstInvalidElement = null;
+
+    // Validación de categorías
+    if (!this.modRemCat.checkValidity() && !this.modAddCat.checkValidity()) {
+      isValid = false;
+      showFeedBack(this.modRemCat, false);
+      showFeedBack(this.modAddCat, false);
+      if (!firstInvalidElement) firstInvalidElement = this.modRemCat;
+    } else {
+      showFeedBack(this.modRemCat, true);
+      showFeedBack(this.modAddCat, true);
+    }
+
+    // Validación de nombre
+    if (this.modDish.value == "") {
+      isValid = false;
+      showFeedBack(this.modDish, false);
+      if (!firstInvalidElement) firstInvalidElement = this.modDish;
+    } else {
+      showFeedBack(this.modDish, true);
+    }
+
+    // Si hay algún error de validación, enfocar en el primer elemento inválido
+    if (!isValid) {
+      firstInvalidElement.focus();
+    } else {
+      const catRem = [...this.modRemCat.selectedOptions].map(
+        (option) => option.value
+      );
+      const catAdd = [...this.modAddCat.selectedOptions].map(
+        (option) => option.value
+      );
+      handler(this.modDish.value, catRem, catAdd);
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+  });
+}
+
 export {
   newDishValidation,
   newCategoryValidation,
@@ -429,4 +475,5 @@ export {
   assignDishToMenuValidation,
   deassignDishToMenuValidation,
   changeDishesInMenuValidation,
+  modifyCatOfDishValidation,
 };

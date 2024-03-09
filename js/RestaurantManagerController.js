@@ -220,7 +220,8 @@ class RestaurantManagerController {
       this.handleRemoveDishForm,
       this.handlerAdminMenu,
       this.handleAdminCategoryForm,
-      this.handleNewRestForm
+      this.handleNewRestForm,
+      this.handleModifyCatForm
     );
 
     this[VIEW].showCloseWindowsOption();
@@ -551,6 +552,46 @@ class RestaurantManagerController {
       this.handleAssignDishToMenu,
       this.handleDeassignDishToMenu
     );
+  };
+
+  handleModifyCatForm = () => {
+    this[VIEW].showModCategoriesForm(
+      this[MODEL].dishes,
+      this[MODEL].getCategories()
+    );
+    this[VIEW].bindModCatForm(this.handleModifyCatOfDish);
+  };
+
+  handleModifyCatOfDish = (name, catRem, catAdd) => {
+    let done;
+    let error;
+    let dish;
+
+    try {
+      dish = this[MODEL].getDish(name);
+
+      for (const categoryName of catRem) {
+        const category = this[MODEL].getCategory(categoryName);
+        this[MODEL].deassignCategoryToDish(category, dish);
+      }
+
+      for (const categoryName of catAdd) {
+        const category = this[MODEL].getCategory(categoryName);
+        this[MODEL].assignCategoryToDish(category, dish);
+      }
+
+      done = true;
+    } catch (exception) {
+      done = false;
+      error = exception;
+    }
+    this[VIEW].showModalModifyCatOfDish(done, dish, error);
+
+    this[VIEW].showModCategoriesForm(
+      this[MODEL].dishes,
+      this[MODEL].getCategories()
+    );
+    this[VIEW].bindModCatForm(this.handleModifyCatOfDish);
   };
 }
 export default RestaurantManagerController;
