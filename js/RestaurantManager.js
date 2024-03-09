@@ -528,6 +528,18 @@ let RestaurantManager = (function () {
         };
       }
 
+      getMenus() {
+        // referencia para habilitar el closure en el objeto
+        let array = this.#menus;
+        return {
+          *[Symbol.iterator]() {
+            for (let i = 0; i < array.length; i++) {
+              yield array[i];
+            }
+          },
+        };
+      }
+
       //Devuelve un iterator de los alergenos del gestor
       get allergens() {
         // referencia para habilitar el closure en el objeto

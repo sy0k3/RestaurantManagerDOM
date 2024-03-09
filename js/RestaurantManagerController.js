@@ -451,8 +451,16 @@ class RestaurantManagerController {
   };
 
   handlerAdminMenu = () => {
-    this[VIEW].showAdminMenuForm(this[MODEL].menus, this[MODEL].dishes);
-    this[VIEW].bindAdminMenuForm(this.handleAssignDishToMenu);
+    this[VIEW].showAdminMenuForm(
+      this[MODEL].menus,
+      this[MODEL].dishes,
+      this[MODEL].getMenus()
+    );
+    this[VIEW].bindAdminMenuForm(
+      this.handleAssignDishToMenu,
+      this.handleDeassignDishToMenu,
+      this.handleChangeDishesInMenu
+    );
   };
 
   handleAssignDishToMenu = (name, dishes) => {
@@ -462,7 +470,6 @@ class RestaurantManagerController {
 
     try {
       menu = this[MODEL].getMenu(name);
-      console.log(menu);
 
       dishes.forEach((name) => {
         const dish = this[MODEL].getDish(name);
@@ -475,6 +482,75 @@ class RestaurantManagerController {
       error = exception;
     }
     this[VIEW].showModalAssignDishToMenu(done, menu, error);
+    this[VIEW].showAdminMenuForm(
+      this[MODEL].menus,
+      this[MODEL].dishes,
+      this[MODEL].getMenus()
+    );
+    this[VIEW].bindAdminMenuForm(
+      this.handleAssignDishToMenu,
+      this.handleDeassignDishToMenu,
+      this.handleChangeDishesInMenu
+    );
+  };
+
+  handleDeassignDishToMenu = (name, dishes) => {
+    let done;
+    let error;
+    let menu;
+
+    try {
+      menu = this[MODEL].getMenu(name);
+
+      dishes.forEach((name) => {
+        const dish = this[MODEL].getDish(name);
+        this[MODEL].deassignDishToMenu(menu, dish);
+      });
+
+      done = true;
+    } catch (exception) {
+      done = false;
+      error = exception;
+    }
+    this[VIEW].showModalDeassignDishToMenu(done, menu, error);
+    this[VIEW].showAdminMenuForm(
+      this[MODEL].menus,
+      this[MODEL].dishes,
+      this[MODEL].getMenus()
+    );
+    this[VIEW].bindAdminMenuForm(
+      this.handleAssignDishToMenu,
+      this.handleDeassignDishToMenu
+    );
+  };
+
+  handleChangeDishesInMenu = (name, dishes) => {
+    let done;
+    let error;
+    let menu;
+
+    try {
+      menu = this[MODEL].getMenu(name);
+      const dish1 = this[MODEL].getDish(dishes[0]);
+      const dish2 = this[MODEL].getDish(dishes[1]);
+
+      this[MODEL].changeDishesPositionsInMenu(menu, dish1, dish2);
+
+      done = true;
+    } catch (exception) {
+      done = false;
+      error = exception;
+    }
+    this[VIEW].showModalChangeDishesInMenu(done, menu, error);
+    this[VIEW].showAdminMenuForm(
+      this[MODEL].menus,
+      this[MODEL].dishes,
+      this[MODEL].getMenus()
+    );
+    this[VIEW].bindAdminMenuForm(
+      this.handleAssignDishToMenu,
+      this.handleDeassignDishToMenu
+    );
   };
 }
 export default RestaurantManagerController;

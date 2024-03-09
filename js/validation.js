@@ -337,9 +337,96 @@ function assignDishToMenuValidation(handler) {
   });
 }
 
+function deassignDishToMenuValidation(handler) {
+  const form = document.forms.fDeassignDishToMenu;
+  form.setAttribute("novalidate", "");
+
+  form.addEventListener("submit", function (event) {
+    let isValid = true;
+    let firstInvalidElement = null;
+
+    // Validación de categorías
+    if (!this.nmDish2.checkValidity()) {
+      isValid = false;
+      showFeedBack(this.nmDish2, false);
+      if (!firstInvalidElement) firstInvalidElement = this.nmDish2;
+    } else {
+      showFeedBack(this.nmDish2, true);
+    }
+
+    // Validación de nombre
+    if (this.nmMenu2.value == "") {
+      isValid = false;
+      showFeedBack(this.nmMenu2, false);
+      if (!firstInvalidElement) firstInvalidElement = this.nmMenu2;
+    } else {
+      showFeedBack(this.nmMenu2, true);
+    }
+
+    // Si hay algún error de validación, enfocar en el primer elemento inválido
+    if (!isValid) {
+      firstInvalidElement.focus();
+    } else {
+      const dishes = [...this.nmDish2.selectedOptions].map(
+        (option) => option.value
+      );
+      handler(this.nmMenu2.value, dishes);
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+  });
+}
+
+function changeDishesInMenuValidation(handler) {
+  const form = document.forms.fChangeDishesInMenu;
+  form.setAttribute("novalidate", "");
+
+  form.addEventListener("submit", function (event) {
+    let isValid = true;
+    let firstInvalidElement = null;
+
+    // Validación de categorías
+    if (
+      !this.changeDish.checkValidity() ||
+      this.changeDish.selectedOptions.length != 2
+    ) {
+      isValid = false;
+      showFeedBack(this.changeDish, false);
+      if (!firstInvalidElement) firstInvalidElement = this.changeDish;
+    } else {
+      showFeedBack(this.changeDish, true);
+    }
+
+    // Validación de nombre
+    if (this.changeMenu.value == "") {
+      isValid = false;
+      showFeedBack(this.changeMenu, false);
+      if (!firstInvalidElement) firstInvalidElement = this.changeMenu;
+    } else {
+      showFeedBack(this.changeMenu, true);
+    }
+
+    // Si hay algún error de validación, enfocar en el primer elemento inválido
+    if (!isValid) {
+      firstInvalidElement.focus();
+    } else {
+      const dishes = [...this.changeDish.selectedOptions].map(
+        (option) => option.value
+      );
+      handler(this.changeMenu.value, dishes);
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+  });
+}
+
 export {
   newDishValidation,
   newCategoryValidation,
   newRestaurantValidation,
   assignDishToMenuValidation,
+  deassignDishToMenuValidation,
+  changeDishesInMenuValidation,
 };

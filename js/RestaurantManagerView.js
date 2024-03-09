@@ -3,6 +3,8 @@ import {
   newCategoryValidation,
   newRestaurantValidation,
   assignDishToMenuValidation,
+  deassignDishToMenuValidation,
+  changeDishesInMenuValidation,
 } from "./validation.js";
 
 const EXCECUTE_HANDLER = Symbol("excecuteHandler");
@@ -356,8 +358,10 @@ class RestaurantManagerView {
     newRestaurantValidation(handler);
   }
 
-  bindAdminMenuForm(handler) {
-    assignDishToMenuValidation(handler);
+  bindAdminMenuForm(handlerAssign, handlerDeassign, handlerChange) {
+    assignDishToMenuValidation(handlerAssign);
+    deassignDishToMenuValidation(handlerDeassign);
+    changeDishesInMenuValidation(handlerChange);
   }
 
   showCategories(categories) {
@@ -1194,7 +1198,7 @@ class RestaurantManagerView {
     });
   }
 
-  showAdminMenuForm(menus, dishes) {
+  showAdminMenuForm(menus, dishes, menusWithDishes) {
     this.main.replaceChildren();
     this.categories.replaceChildren();
 
@@ -1260,13 +1264,173 @@ class RestaurantManagerView {
 
     form.insertAdjacentHTML(
       "beforeend",
-      `<div class="mb-12">
+      `<div class="my-12">
           <button class="btn btn-primary" type="submit">Asignar Plato/s</button>
         </div>`
     );
 
     container.append(form);
+
+    container.insertAdjacentHTML(
+      "beforeend",
+      '<h1 class="display-5">Desasignar plato/s a un menú</h1>'
+    );
+
+    const form2 = document.createElement("form");
+    form2.name = "fDeassignDishToMenu";
+    form2.setAttribute("role", "form");
+    form2.setAttribute("novalidate", "");
+    form2.classList.add("row");
+    form2.classList.add("g-3");
+
+    form2.insertAdjacentHTML(
+      "beforeend",
+      `<div class="col-md-6 mb-3">
+				<label class="form-label" for="nmMenu2">Menús *</label>
+				<div class="input-group">
+					<label class="input-group-text" for="nmMenu2"><i class="bi bi-card-checklist"></i></label>
+					<select class="form-select" name="nmMenu2" id="nmMenu2" required>
+          <option value="">- Selecciona un menú -</option>
+					</select>
+					<div class="invalid-feedback">Debes seleccionar un menú.</div>
+					<div class="valid-feedback">Correcto.</div>
+				</div>
+			</div>`
+    );
+    const nmMenu2 = form2.querySelector("#nmMenu2");
+    for (const menu of menus) {
+      nmMenu2.insertAdjacentHTML(
+        "beforeend",
+        `<option value="${menu.name}">${menu.name}</option>`
+      );
+    }
+
+    form2.insertAdjacentHTML(
+      "beforeend",
+      `<div class="col-md-6 mb-3">
+				<label class="form-label" for="nmDish2">Platos *</label>
+				<div class="input-group">
+					<label class="input-group-text" for="nmDish2"><i class="bi bi-card-checklist"></i></label>
+					<select class="form-select" name="nmDish2" id="nmDish2" multiple required>
+					</select>
+					<div class="invalid-feedback">Debes asignar minimo un plato.</div>
+					<div class="valid-feedback">Correcto.</div>
+				</div>
+			</div>`
+    );
+    const nmDish2 = form2.querySelector("#nmDish2");
+
+    form2.insertAdjacentHTML(
+      "beforeend",
+      `<div class="mb-12">
+          <button class="btn btn-primary" type="submit">Desasignar Plato/s</button>
+        </div>`
+    );
+
+    nmMenu2.addEventListener("change", () => {
+      const selectedMenuName = nmMenu2.value;
+      if (selectedMenuName) {
+        // Limpiar el contenido actual del select de platos del menú
+        nmDish2.innerHTML = "";
+
+        // Buscar el menú seleccionado en la lista de menús
+        for (const menuItem of menusWithDishes) {
+          if (menuItem.menu.name === selectedMenuName) {
+            // Agregar las opciones de platos del menú seleccionado al select
+            for (const dish of menuItem.dishes) {
+              nmDish2.insertAdjacentHTML(
+                "beforeend",
+                `<option value="${dish.name}">${dish.name}</option>`
+              );
+            }
+            return; // Salir del bucle una vez que se ha encontrado el menú seleccionado
+          }
+        }
+      }
+    });
+
+    container.append(form2);
+
+    container.insertAdjacentHTML(
+      "beforeend",
+      '<h1 class="display-5">Cambiar posicion de dos platos de un menú</h1>'
+    );
+
+    const form3 = document.createElement("form");
+    form3.name = "fChangeDishesInMenu";
+    form3.setAttribute("role", "form");
+    form3.setAttribute("novalidate", "");
+    form3.classList.add("row");
+    form3.classList.add("g-3");
+
+    form3.insertAdjacentHTML(
+      "beforeend",
+      `<div class="col-md-6 mb-3">
+				<label class="form-label" for="changeMenu">Menús *</label>
+				<div class="input-group">
+					<label class="input-group-text" for="changeMenu"><i class="bi bi-card-checklist"></i></label>
+					<select class="form-select" name="changeMenu" id="changeMenu" required>
+          <option value="">- Selecciona un menú -</option>
+					</select>
+					<div class="invalid-feedback">Debes seleccionar un menú.</div>
+					<div class="valid-feedback">Correcto.</div>
+				</div>
+			</div>`
+    );
+
+    form3.insertAdjacentHTML(
+      "beforeend",
+      `<div class="col-md-6 mb-3">
+				<label class="form-label" for="changeDish">Platos *</label>
+				<div class="input-group">
+					<label class="input-group-text" for="changeDish"><i class="bi bi-card-checklist"></i></label>
+					<select class="form-select" name="changeDish" id="changeDish" multiple required>
+					</select>
+					<div class="invalid-feedback">Debes elegir dos platos.</div>
+					<div class="valid-feedback">Correcto.</div>
+				</div>
+			</div>`
+    );
+
+    form3.insertAdjacentHTML(
+      "beforeend",
+      `<div class="mb-12">
+          <button class="btn btn-primary" type="submit">Cambiar Platos</button>
+        </div>`
+    );
+    container.append(form3);
     this.main.append(container);
+
+    const changeMenu = form3.querySelector("#changeMenu");
+    for (const menu of menus) {
+      changeMenu.insertAdjacentHTML(
+        "beforeend",
+        `<option value="${menu.name}">${menu.name}</option>`
+      );
+    }
+
+    const changeDish = form3.querySelector("#changeDish");
+    changeMenu.addEventListener("change", () => {
+      const selectedMenuName = changeMenu.value;
+      if (selectedMenuName) {
+        // Limpiar el contenido actual del select de platos del menú
+        changeDish.innerHTML = "";
+
+        // Buscar el menú seleccionado en la lista de menús
+        for (const menuItem of menusWithDishes) {
+          if (menuItem.menu.name === selectedMenuName) {
+            // Agregar las opciones de platos del menú seleccionado al select
+            for (const dish of menuItem.dishes) {
+              changeDish.insertAdjacentHTML(
+                "beforeend",
+                `<option value="${dish.name}">${dish.name}</option>`
+              );
+            }
+            return; // Salir del bucle una vez que se ha encontrado el menú seleccionado
+          }
+        }
+      }
+    });
   }
 
   showModalAssignDishToMenu(done, menu, error) {
@@ -1287,7 +1451,7 @@ class RestaurantManagerView {
     } else {
       body.insertAdjacentHTML(
         "afterbegin",
-        `<div class="error text-danger p-3"><i class="bi bi-exclamation-triangle"></i> Los platos no han podido ser asignados al menú <strong>${menu.name}</strong>correctamente.</div>`
+        `<div class="error text-danger p-3"><i class="bi bi-exclamation-triangle"></i> Los platos no han podido ser asignados al menú <strong>${menu.name}</strong> correctamente.</div>`
       );
     }
 
@@ -1306,6 +1470,98 @@ class RestaurantManagerView {
       );
       if (nmNameInput) {
         nmNameInput.focus();
+      }
+    };
+    messageModalContainer.addEventListener("hidden.bs.modal", listener, {
+      once: true,
+    });
+  }
+
+  showModalDeassignDishToMenu(done, menu, error) {
+    const messageModalContainer = document.getElementById("messageModal");
+    const messageModal = new bootstrap.Modal(messageModalContainer);
+
+    const title = document.getElementById("messageModalTitle");
+    title.innerHTML = "Platos desasignados del menú";
+
+    const body = messageModalContainer.querySelector(".modal-body");
+    body.replaceChildren();
+
+    if (done) {
+      body.insertAdjacentHTML(
+        "afterbegin",
+        `<div class="p-3">Platos desasigandos del menú <strong>${menu.name}</strong> correctamente.</div>`
+      );
+    } else {
+      body.insertAdjacentHTML(
+        "afterbegin",
+        `<div class="error text-danger p-3"><i class="bi bi-exclamation-triangle"></i> Los platos no han podido ser desasignados del menú <strong>${menu.name}</strong> correctamente.</div>`
+      );
+    }
+
+    messageModal.show();
+
+    const listener = (event) => {
+      event.preventDefault();
+      if (done) {
+        const formDeassignDishToMenu = document.getElementById(
+          "fDeassignDishToMenu"
+        );
+        if (formDeassignDishToMenu) {
+          formDeassignDishToMenu.reset();
+        }
+      }
+      const nmMenuInput = document.querySelector(
+        '#fDeassignDishToMenu select[name="nmMenu2"]'
+      );
+      if (nmMenuInput) {
+        nmMenuInput.focus();
+      }
+    };
+    messageModalContainer.addEventListener("hidden.bs.modal", listener, {
+      once: true,
+    });
+  }
+
+  showModalChangeDishesInMenu(done, menu, error) {
+    const messageModalContainer = document.getElementById("messageModal");
+    const messageModal = new bootstrap.Modal(messageModalContainer);
+
+    const title = document.getElementById("messageModalTitle");
+    title.innerHTML = "Platos desasignados del menú";
+
+    const body = messageModalContainer.querySelector(".modal-body");
+    body.replaceChildren();
+
+    if (done) {
+      body.insertAdjacentHTML(
+        "afterbegin",
+        `<div class="p-3">Platos cambiados de posicion del menú <strong>${menu.name}</strong> correctamente.</div>`
+      );
+    } else {
+      body.insertAdjacentHTML(
+        "afterbegin",
+        `<div class="error text-danger p-3"><i class="bi bi-exclamation-triangle"></i> Los platos no han podido ser cambiados de posicion del menú <strong>${menu.name}</strong> correctamente.</div>`
+      );
+    }
+
+    messageModal.show();
+
+    const listener = (event) => {
+      event.preventDefault();
+      if (done) {
+        const formChangeDishesInMenu = document.getElementById(
+          "fChangeDishesInMenu"
+        );
+        if (formChangeDishesInMenu) {
+          formChangeDishesInMenu.reset();
+        }
+      }
+      const changeMenuInput = document.querySelector(
+        '#fChangeDishesInMenu select[name="changeMenu"]'
+      );
+      if (changeMenuInput) {
+        changeMenuInput.focus();
       }
     };
     messageModalContainer.addEventListener("hidden.bs.modal", listener, {
