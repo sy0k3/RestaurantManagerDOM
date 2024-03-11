@@ -13,8 +13,6 @@ import { getCookie, greetUser } from "./util.js";
 const MODEL = Symbol("RestaurantManagerModel");
 const VIEW = Symbol("RestaurantManagerView");
 
-const LOAD_MANAGER_OBJECTS = Symbol("Load Manager Objects");
-
 const AUTH = Symbol("AUTH");
 const USER = Symbol("USER");
 
@@ -29,30 +27,10 @@ class RestaurantManagerController {
     this[FAVORITE_DISHES] = [];
 
     this.onLoad();
-    this.onInit();
-
-    this[VIEW].bindInit(this.handleInit);
   }
 
-  [LOAD_MANAGER_OBJECTS]() {
-    this.cargarDatos();
-  }
-
-  async cargarDatosDesdeJSON() {
-    try {
-      const response = await fetch(
-        "https://raw.githubusercontent.com/sy0k3/RestaurantManagerDOM/master/js/data.json"
-      );
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      console.error("Error al cargar los datos desde el archivo JSON:", error);
-      return null;
-    }
-  }
-
-  async cargarDatos() {
-    const data = await this.cargarDatosDesdeJSON();
+  loadData(data) {
+    console.log(data);
     if (data) {
       const categorias = data.categorias;
       const platos = data.platos;
@@ -69,6 +47,8 @@ class RestaurantManagerController {
           plato.imagen
         );
         this[MODEL].addDish(nuevoPlato);
+        console.log(plato);
+        console.log(nuevoPlato);
       });
 
       // Añade las categorías al modelo y asigna platos a categorías
@@ -125,16 +105,6 @@ class RestaurantManagerController {
   }
 
   onLoad() {
-    this[LOAD_MANAGER_OBJECTS]();
-    this[VIEW].showCategoriesInMenu(this[MODEL].categories);
-    this[VIEW].bindDishesCategoryListInMenu(this.handleDishesCategoryList);
-
-    this[VIEW].showRestaurantsInMenu(this[MODEL].restaurants);
-    this[VIEW].bindRestaurants(this.handleRestaurant);
-
-    this[VIEW].showCloseWindowsOption();
-    this[VIEW].bindCloseWindows();
-
     if (getCookie("accetedCookieMessage") !== "true") {
       this[VIEW].showCookiesMessage();
     }
@@ -151,6 +121,36 @@ class RestaurantManagerController {
       this[VIEW].bindIdentificationLink(this.handleLoginForm);
       this.onCloseSession();
     }
+
+    fetch("./js/data/data.json")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        this.loadData(data);
+      })
+      .then(() => {
+        this.onInit();
+        this[VIEW].bindInit(this.handleInit);
+      })
+      .catch((error) => {
+        console.error(
+          "Error al cargar los datos desde el archivo JSON:",
+          error
+        );
+      });
+
+    this[VIEW].showCategoriesInMenu(this[MODEL].categories);
+    this[VIEW].bindDishesCategoryListInMenu(this.handleDishesCategoryList);
+
+    this[VIEW].showRestaurantsInMenu(this[MODEL].restaurants);
+    this[VIEW].bindRestaurants(this.handleRestaurant);
+
+    this[VIEW].showCloseWindowsOption();
+    this[VIEW].bindCloseWindows();
 
     const storedFavoriteDishes = localStorage.getItem("favoriteDishes");
     if (storedFavoriteDishes) {
@@ -685,21 +685,14 @@ class RestaurantManagerController {
       });
     }
     const jsonString = JSON.stringify(data);
-    console.log(jsonString);
 
     const fechaActual = new Date().toISOString().replace(/:/g, "-");
     const nombreArchivo = `backup_${fechaActual}.json`;
 
-    fetch(
-      `https://raw.githubusercontent.com/sy0k3/RestaurantManagerDOM/master/js/data.json/backup/${nombreArchivo}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: jsonString,
-      }
-    )
+    fetch(`./js/data/${nombreArchivo}`, {
+      method: "POST",
+      body: jsonString,
+    })
       .then((response) => {
         if (!response.ok) {
           throw new Error("Error al guardar el archivo de respaldo.");
