@@ -1,0 +1,209 @@
+{
+  "categorias": [
+    {
+      "nombre": "Entrantes",
+      "descripcion": "Platos ligeros y sabrosos que se sirven al principio de la comida para abrir el apetito",
+      "platos": [
+        "Pulpo a la Gallega",
+        "Paella Valenciana",
+        "Sushi",
+        "Tacos al Pastor"
+      ]
+    },
+    {
+      "nombre": "Primeros",
+      "descripcion": "Platos principales que incluyen carnes, pescados o platos vegetarianos, más abundantes que los primeros",
+      "platos": [
+        "Pulpo a la Gallega",
+        "Paella Valenciana",
+        "Sushi",
+        "Tacos al Pastor"
+      ]
+    },
+    {
+      "nombre": "Postres",
+      "descripcion": "Deliciosos dulces y tentadores que se disfrutan al final de la comida para satisfacer el paladar",
+      "platos": ["Poke Bowl", "Cordero al Horno", "Sopa de Tomate", "Tiramisú"]
+    }
+  ],
+  "platos": [
+    {
+      "nombre": "Pulpo a la Gallega",
+      "descripcion": "El “pulpo á feira” es un plato que consta de pulpo cocido con patatas, sal gruesa, pimentón y aceite de oliva",
+      "ingredientes": ["Pulpo", "Patata", "Sal", "Pimentón", "Aceite de oliva"],
+      "imagen": "https://esenciadelmar.es/wp-content/uploads/2023/08/receta-pulpo-gallega.jpeg"
+    },
+    {
+      "nombre": "Paella Valenciana",
+      "descripcion": "La paella valenciana es un plato típico de la región de Valencia que se elabora con arroz, verduras y carne o marisco.",
+      "ingredientes": [
+        "Arroz",
+        "Pollo",
+        "Conejo",
+        "Judías verdes",
+        "Garrofón",
+        "Tomate",
+        "Azafrán",
+        "Aceite de oliva"
+      ],
+      "imagen": "https://www.publico.es/uploads/2021/11/09/618a5de6435a0.jpeg"
+    },
+    {
+      "nombre": "Sushi",
+      "descripcion": "El sushi es una comida japonesa que consiste en arroz adobado con vinagre de arroz, acompañado de otros ingredientes como pescado o marisco.",
+      "ingredientes": ["Arroz", "Vinagre de arroz", "Pescado", "Alga nori"],
+      "imagen": "https://www.asadorcitywokalfafar.com/wp-content/uploads/2021/07/variedades-sushi.jpg"
+    },
+    {
+      "nombre": "Tacos al Pastor",
+      "descripcion": "Los tacos al pastor son una deliciosa especialidad de la cocina mexicana, consisten en carne de cerdo adobada, piña y cebolla, servidos en tortillas de maíz.",
+      "ingredientes": [
+        "Carne de cerdo",
+        "Piña",
+        "Cebolla",
+        "Tortillas de maíz"
+      ],
+      "imagen": "https://holacarolina.org/wp-content/uploads/2022/04/Comida-Tipica-Mexicana-Tacos-Pastor-Portada.jpg"
+    },
+    {
+      "nombre": "Lasagna",
+      "descripcion": "La lasaña es un plato de origen italiano que se elabora con láminas de pasta intercaladas con carne picada, salsa de tomate y bechamel.",
+      "ingredientes": [
+        "Pasta para lasaña",
+        "Carne picada",
+        "Salsa de tomate",
+        "Bechamel",
+        "Queso rallado"
+      ],
+      "imagen": "https://www.paulinacocina.net/wp-content/uploads/2022/06/receta-de-lasagna-de-berenjenas-1200x800.jpg"
+    },
+    {
+      "nombre": "Maki de Salmón",
+      "descripcion": "El sushi de salmón es una variedad de sushi muy popular que consiste en arroz adobado con vinagre de arroz, envuelto en alga nori y relleno de salmón fresco.",
+      "ingredientes": [
+        "Arroz",
+        "Vinagre de arroz",
+        "Alga nori",
+        "Salmón fresco"
+      ],
+      "imagen": "https://sushi.oceanwp.org/wp-content/uploads/2022/03/nori-sushi-rolls-with-salmon-served-with-ginger-wasabi-shredded-carrot-1.jpg"
+    },
+    {
+      "nombre": "Ceviche Peruano",
+      "descripcion": "El ceviche peruano es un plato típico de la gastronomía peruana, elaborado con pescado fresco marinado en jugo de limón, cebolla, ají y cilantro.",
+      "ingredientes": ["Pescado fresco", "Limón", "Cebolla", "Ají", "Cilantro"],
+      "imagen": "https://gestion.pe/resizer/8c1ugDy_313ZNnDVDNxqRCIYHx0=/1200x800/smart/filters:format(jpeg):quality(75)/cloudfront-us-east-1.images.arcpublishing.com/elcomercio/GFXUEOFW5BALVBMB3Y24M6V3XM.jpg"
+    },
+    {
+      "nombre": "Hamburguesa Clásica",
+      "descripcion": "La hamburguesa clásica es un sándwich elaborado con una carne de hamburguesa a la parrilla, acompañada de lechuga, tomate, cebolla y queso, todo dentro de un pan de hamburguesa.",
+      "ingredientes": [
+        "Carne de hamburguesa",
+        "Lechuga",
+        "Tomate",
+        "Cebolla",
+        "Queso",
+        "Pan de hamburguesa"
+      ],
+      "imagen": "https://www.miguelvergara.com/actualidad/wp-content/uploads/2021/05/front-view-burger-on-stand-1200x800.jpg"
+    },
+    {
+      "nombre": "Poke Bowl",
+      "descripcion": "El poke bowl es una ensalada de origen hawaiano que se elabora con pescado crudo marinado, arroz, aguacate, pepino, cebolla y algas, todo servido en un bol.",
+      "ingredientes": [
+        "Pescado crudo",
+        "Arroz",
+        "Aguacate",
+        "Pepino",
+        "Cebolla",
+        "Algas"
+      ],
+      "imagen": "https://hips.hearstapps.com/hmg-prod/images/poke-bowl-elle-gourmet-1-1669825719.jpg"
+    },
+    {
+      "nombre": "Cordero al Horno",
+      "descripcion": "El cordero al horno es un plato tradicional de la cocina mediterránea, consiste en carne de cordero asada lentamente en el horno con hierbas aromáticas y especias.",
+      "ingredientes": ["Cordero", "Hierbas aromáticas", "Especias"],
+      "imagen": "https://content-cocina.lecturas.com/medio/2023/12/11/costillar-de-cordero-al-horno-istock-1400651441_d093155a_231211105736_1200x800.jpg"
+    },
+    {
+      "nombre": "Sopa de Tomate",
+      "descripcion": "La sopa de tomate es una sopa reconfortante y saludable, elaborada con tomates maduros, cebolla, ajo, caldo de verduras y hierbas aromáticas.",
+      "ingredientes": [
+        "Tomates",
+        "Cebolla",
+        "Ajo",
+        "Caldo de verduras",
+        "Hierbas aromáticas"
+      ],
+      "imagen": "https://assets.elgourmet.com/wp-content/uploads/2023/03/sopa-_wiEKe3BYpGML5Q06HJUyvPOhAbxkzm.png"
+    },
+    {
+      "nombre": "Tiramisú",
+      "descripcion": "El tiramisú es un postre italiano muy popular que se elabora con capas de bizcochos de soletilla mojados en café, crema de mascarpone y cacao en polvo.",
+      "ingredientes": [
+        "Bizcochos de soletilla",
+        "Café",
+        "Mascarpone",
+        "Cacao en polvo"
+      ],
+      "imagen": "https://cdn-italiani-media.italiani.it/site-italiani/2020/09/tiramisu.jpg"
+    }
+  ],
+  "alergenos": [
+    {
+      "nombre": "Lácteos",
+      "descripcion": "Alérgeno relacionado con productos lácteos como leche, queso y mantequilla",
+      "platos": ["Lasagna", "Tiramisú"]
+    },
+    {
+      "nombre": "Moluscos",
+      "descripcion": "Alérgeno relacionado con moluscos como almejas, mejillones y calamares",
+      "platos": ["Pulpo a la Gallega", "Paella Valenciana", "Ceviche Peruano"]
+    },
+    {
+      "nombre": "Gluten",
+      "descripcion": "Alérgeno relacionado con el gluten, presente en trigo, cebada y centeno, entre otros",
+      "platos": ["Tacos al Pastor", "Lasagna", "Hamburguesa Clásica"]
+    },
+    {
+      "nombre": "Crustaceos",
+      "descripcion": "Alérgeno relacionado con crustáceos como langostas, camarones y cangrejos",
+      "platos": ["Pulpo a la Gallega", "Sushi", "Ceviche Peruano", "Poke Bowl"]
+    }
+  ],
+  "menus": [
+    {
+      "nombre": "Oriental",
+      "descripcion": "Este menu ofrece una distina variacion de platos de origen asiatico conprendiendo un entrante o ensalada, un principal y postre",
+      "platos": ["Sushi", "Maki de Salmón", "Poke Bowl"]
+    },
+    {
+      "nombre": "Diario",
+      "descripcion": "Una variedad de platos equilibrados y nutritivos, perfectos para disfrutar en el día a día",
+      "platos": ["Cordero al Horno", "Sopa de Tomate", "Tiramisú"]
+    },
+    {
+      "nombre": "Mar y Montaña",
+      "descripcion": "Una combinación única de ingredientes del mar y de la tierra, que ofrece una experiencia culinaria sorprendente",
+      "platos": ["Pulpo a la Gallega", "Paella Valenciana", "Ceviche Peruano"]
+    }
+  ],
+  "restaurantes": [
+    {
+      "nombre": "Restaurante Takara",
+      "descripcion": "Restaurante de platos con tematica oriental",
+      "coordenadas": { "latitud": -89.654654, "longitud": -89.23323 }
+    },
+    {
+      "nombre": "Celler de Can Roca",
+      "descripcion": "Un referente mundial en la alta cocina, con una propuesta culinaria sofisticada y una experiencia gastronómica incomparable",
+      "coordenadas": { "latitud": -89.654654, "longitud": -89.23323 }
+    },
+    {
+      "nombre": "Arab Palace",
+      "descripcion": "Un lugar único que te transportará a Oriente con su temática oriental y una selección exquisita de platos inspirados en la cocina asiática",
+      "coordenadas": { "latitud": -89.654654, "longitud": -89.23323 }
+    }
+  ]
+}
