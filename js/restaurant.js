@@ -50,6 +50,8 @@ const historyActions = {
   restaurantsInMenu: (event) => {
     RestaurantManagerApp.handleShowRestaurantCard(event.state.restaurant);
   },
+
+  login: () => ManagerApp.handleLoginForm(),
 };
 
 history.replaceState({ action: "init" }, null);

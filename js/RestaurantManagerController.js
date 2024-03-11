@@ -8,15 +8,25 @@ import {
   Coordinate,
 } from "./RestaurantManager.js";
 
+import { getCookie, greetUser } from "./util.js";
+
 const MODEL = Symbol("RestaurantManagerModel");
 const VIEW = Symbol("RestaurantManagerView");
 
 const LOAD_MANAGER_OBJECTS = Symbol("Load Manager Objects");
 
+const AUTH = Symbol("AUTH");
+const USER = Symbol("USER");
+
+const FAVORITE_DISHES = Symbol("FAVORITE_DISHES");
+
 class RestaurantManagerController {
-  constructor(model, view) {
+  constructor(model, view, auth) {
     this[MODEL] = model;
     this[VIEW] = view;
+    this[AUTH] = auth;
+    this[USER] = null;
+    this[FAVORITE_DISHES] = [];
 
     this.onLoad();
     this.onInit();
@@ -214,18 +224,30 @@ class RestaurantManagerController {
     this[VIEW].showRestaurantsInMenu(this[MODEL].restaurants);
     this[VIEW].bindRestaurants(this.handleRestaurant);
 
-    this[VIEW].showAdminMenu();
-    this[VIEW].bindAdminMenu(
-      this.handleNewDishForm,
-      this.handleRemoveDishForm,
-      this.handlerAdminMenu,
-      this.handleAdminCategoryForm,
-      this.handleNewRestForm,
-      this.handleModifyCatForm
-    );
-
     this[VIEW].showCloseWindowsOption();
     this[VIEW].bindCloseWindows();
+
+    if (getCookie("accetedCookieMessage") !== "true") {
+      this[VIEW].showCookiesMessage();
+    }
+
+    const userCookie = getCookie("activeUser");
+    if (userCookie) {
+      const user = this[AUTH].getUser(userCookie);
+      if (user) {
+        this[USER] = user;
+        this.onOpenSession(user);
+      }
+    } else {
+      this[VIEW].showIdentificationLink();
+      this[VIEW].bindIdentificationLink(this.handleLoginForm);
+      this.onCloseSession();
+    }
+
+    const storedFavoriteDishes = localStorage.getItem("favoriteDishes");
+    if (storedFavoriteDishes) {
+      this[FAVORITE_DISHES] = JSON.parse(storedFavoriteDishes);
+    }
   }
 
   onInit() {
@@ -261,9 +283,15 @@ class RestaurantManagerController {
   };
 
   handleShowDishCard = (name) => {
+    const userCookie = getCookie("activeUser");
+    let user;
+    if (userCookie) {
+      user = this[AUTH].getUser(userCookie);
+    }
     const dish = this[MODEL].getDish(name);
-    this[VIEW].showDishCard(dish);
+    this[VIEW].showDishCard(dish, user);
     this[VIEW].bindDishCardInWindow(this.handleShowDishCardInWindow);
+    this[VIEW].bindFavoriteDish(this.addFavoriteDish);
   };
 
   handleShowDishCardInWindow = (name, newWindow) => {
@@ -592,6 +620,105 @@ class RestaurantManagerController {
       this[MODEL].getCategories()
     );
     this[VIEW].bindModCatForm(this.handleModifyCatOfDish);
+  };
+
+  handleLoginForm = () => {
+    this[VIEW].showLogin();
+    this[VIEW].bindLogin(this.handleLogin);
+  };
+
+  handleLogin = (username, password, remember) => {
+    if (this[AUTH].validateUser(username, password)) {
+      this[USER] = this[AUTH].getUser(username);
+      this.onOpenSession();
+
+      if (remember) {
+        this[VIEW].setUserCookie(this[USER]);
+      }
+    } else {
+      this[VIEW].showInvalidUserMessage();
+    }
+  };
+
+  onOpenSession() {
+    this.onInit();
+
+    this[VIEW].initHistory();
+    this[VIEW].showAuthUserProfile(this[USER]);
+    this[VIEW].bindCloseSession(this.handleCloseSession);
+
+    this[VIEW].showAdminMenu();
+    this[VIEW].bindAdminMenu(
+      this.handleNewDishForm,
+      this.handleRemoveDishForm,
+      this.handlerAdminMenu,
+      this.handleAdminCategoryForm,
+      this.handleNewRestForm,
+      this.handleModifyCatForm
+    );
+
+    this[VIEW].showFavoriteDishesMenu();
+    this[VIEW].bindFavoriteDishMenu(this.handleShowFavoriteDishes);
+    greetUser();
+  }
+
+  handleCloseSession = () => {
+    this.onCloseSession();
+    this.onInit();
+    this[VIEW].initHistory();
+  };
+
+  onCloseSession() {
+    this[USER] = null;
+    this[VIEW].deleteUserCookie();
+    this[VIEW].showIdentificationLink();
+    this[VIEW].bindIdentificationLink(this.handleLoginForm);
+    this[VIEW].removeAdminMenu();
+    this[VIEW].removeFavoriteDishesMenu();
+  }
+
+  addFavoriteDish = (name) => {
+    let done;
+    let error;
+    let dish;
+    try {
+      dish = this[MODEL].getDish(name);
+      const index = this[FAVORITE_DISHES].findIndex(
+        (favDish) => favDish.name === dish.name
+      );
+      if (index === -1) {
+        this[FAVORITE_DISHES].push(
+          JSON.stringify({
+            name: dish.name,
+            description: dish.description,
+            ingredients: dish.ingredients,
+            image: dish.image,
+          })
+        );
+      } else {
+        this[FAVORITE_DISHES].splice(index, 1);
+      }
+      localStorage.setItem(
+        "favoriteDishes",
+        JSON.stringify(this[FAVORITE_DISHES])
+      );
+
+      done = true;
+    } catch (exception) {
+      done = false;
+      error = exception;
+    }
+
+    this[VIEW].showModalAddFavoriteDish(done, dish, error);
+  };
+
+  handleShowFavoriteDishes = () => {
+    const storedFavoriteDishes = localStorage.getItem("favoriteDishes");
+
+    if (storedFavoriteDishes) {
+      this[FAVORITE_DISHES] = JSON.parse(storedFavoriteDishes);
+    }
+    this[VIEW].showFavoriteDishes(this[FAVORITE_DISHES]);
   };
 }
 export default RestaurantManagerController;

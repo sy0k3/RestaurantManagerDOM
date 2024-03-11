@@ -8,6 +8,8 @@ import {
   modifyCatOfDishValidation,
 } from "./validation.js";
 
+import { setCookie } from "./util.js";
+
 const EXCECUTE_HANDLER = Symbol("excecuteHandler");
 
 class RestaurantManagerView {
@@ -501,7 +503,7 @@ class RestaurantManagerView {
     }
   }
 
-  showDishCard(dish) {
+  showDishCard(dish, user) {
     this.main.replaceChildren();
     const container = document.createElement("div");
     container.id = "dish-card";
@@ -517,16 +519,29 @@ class RestaurantManagerView {
             <img src="${dish.image}" class="img-fluid rounded-start" alt="${dish.name}">
           </div>
           <div class="col-md-8">
-            <div class="card-body px-4>
+            <div class="card-body px-4">
               <h5 class="card-title" style="font-size:1.8em;"><strong>${dish.name}</strong></h5>
               <p class="card-text">${dish.description}</p>
               <p class="card-text"><strong>Ingredientes:</strong> ${dish.ingredients}</p>
               <button type="button" class="btn btn-warning" data-dish="${dish.name}">Abrir en nueva ventana</button>
-            </div>
+            </div>`
+    );
+    if (user) {
+      container
+        .querySelector(".card-body")
+        .insertAdjacentHTML(
+          "beforeend",
+          `<a id="favorite-dish" class="btn btn-primary" data-dish="${dish.name}">Añadir a favoritos</a>`
+        );
+    }
+    container.insertAdjacentHTML(
+      "beforeend",
+      `</div>
           </div>
         </div>
       </div>`
     );
+
     this.main.append(container);
   }
 
@@ -1763,6 +1778,312 @@ class RestaurantManagerView {
       if (modDishInput) {
         modDishInput.focus();
       }
+    };
+    messageModalContainer.addEventListener("hidden.bs.modal", listener, {
+      once: true,
+    });
+  }
+
+  showCookiesMessage() {
+    const toast = `<div class="fixed-top p-5 mt-5">
+    <div id="cookies-message" class="toast fade show bg-dark text-white
+    w-100 mw-100" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast-header">
+    <h4 class="me-auto">Aviso de uso de cookies</h4>
+    <button type="button" class="btn-close" data-bs-dismiss="toast"
+    aria-label="Close" id="btnDismissCookie"></button>
+    </div>
+    <div class="toast-body p-4 d-flex flex-column">
+    <p>
+    Este sitio web almacenda datos en cookies para activar su
+    funcionalidad, entre las que se encuentra
+    datos analíticos y personalización. Para poder utilizar este
+    sitio, estás automáticamente aceptando
+    que
+    utilizamos cookies.
+    </p>
+    <div class="ml-auto">
+    <button type="button" class="btn btn-outline-light mr-3 deny"
+    id="btnDenyCookie" data-bs-dismiss="toast">
+    Denegar
+    </button>
+    <button type="button" class="btn btn-primary"
+    id="btnAcceptCookie" data-bs-dismiss="toast">
+    Aceptar
+    </button>
+    </div>
+    </div>
+    </div>
+    </div>`;
+    document.body.insertAdjacentHTML("afterbegin", toast);
+
+    const cookiesMessage = document.getElementById("cookies-message");
+    cookiesMessage.addEventListener("hidden.bs.toast", (event) => {
+      event.currentTarget.parentElement.remove();
+    });
+
+    const denyCookieFunction = (event) => {
+      this.main.replaceChildren();
+      this.main.insertAdjacentHTML(
+        "afterbegin",
+        `<div class="container my3"><div class="alert alert-warning" role="alert">
+      <strong>Para utilizar esta web es necesario aceptar el uso de
+      cookies. Debe recargar la página y aceptar las condicones para seguir
+      navegando. Gracias.</strong>
+      </div></div>`
+      );
+      this.categories.remove();
+      this.menu.remove();
+    };
+    const btnDenyCookie = document.getElementById("btnDenyCookie");
+    btnDenyCookie.addEventListener("click", denyCookieFunction);
+    const btnDismissCookie = document.getElementById("btnDismissCookie");
+    btnDismissCookie.addEventListener("click", denyCookieFunction);
+
+    const btnAcceptCookie = document.getElementById("btnAcceptCookie");
+    btnAcceptCookie.addEventListener("click", (event) => {
+      setCookie("accetedCookieMessage", "true", 1);
+    });
+  }
+
+  showIdentificationLink() {
+    const userArea = document.getElementById("userArea");
+    userArea.replaceChildren();
+    userArea.insertAdjacentHTML(
+      "afterbegin",
+      `<div class="account d-inline-flex mx-1n">
+    <a id="login" href="#"><i class="bi bi-person-circle" ariahidden="true"></i> Identificate</a>
+    </div>`
+    );
+  }
+
+  bindIdentificationLink(handler) {
+    const login = document.getElementById("login");
+    login.addEventListener("click", (event) => {
+      this[EXCECUTE_HANDLER](
+        handler,
+        [],
+        "main",
+        { action: "login" },
+        "#",
+        event
+      );
+    });
+  }
+
+  showLogin() {
+    this.main.replaceChildren();
+    this.categories.replaceChildren();
+    const login = `<div class="container h-100">
+    <div class="d-flex justify-content-center h-100 mt-10">
+        <div class="user_card text-center">
+        <h1>LOGIN</h1>
+            <div class="d-flex justify-content-center form_container">
+                <form name="fLogin" role="form" novalidate>
+                    <div class="input-group mb-3">
+                        <input type="text" name="username" class="form-control input_user" value="" placeholder="Usuario">
+                    </div>
+                    <div class="input-group mb-2">
+                        <input type="password" name="password" class="form-control input_pass" value="" placeholder="Contraseña">
+                    </div>
+                    <div class="form-group d-flex align-items-center">
+                        <div class="custom-control custom-checkbox mr-auto">
+                            <input name="remember" type="checkbox" class="custom-control-input" id="customControlInline">
+                            <label class="custom-control-label" for="customControlInline">Recuérdame</label>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-center mt-3 login_container">
+                        <button class="btn login_btn btn-warning" type="submit">Acceder</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+`;
+    this.main.insertAdjacentHTML("afterbegin", login);
+  }
+
+  bindLogin(handler) {
+    const form = document.forms.fLogin;
+    form.addEventListener("submit", (event) => {
+      handler(form.username.value, form.password.value, form.remember.checked);
+      event.preventDefault();
+    });
+  }
+
+  showInvalidUserMessage() {
+    this.categories.insertAdjacentHTML(
+      "beforeend",
+      `<div class="container my3"><div class="alert alert-warning" role="alert">
+    <strong>El usuario y la contraseña no son válidos. Inténtelo
+    nuevamente.</strong>
+    </div></div>`
+    );
+    document.forms.fLogin.reset();
+    document.forms.fLogin.username.focus();
+  }
+
+  initHistory() {
+    history.replaceState({ action: "init" }, null);
+  }
+
+  showAuthUserProfile(user) {
+    const userArea = document.getElementById("userArea");
+    userArea.replaceChildren();
+    userArea.insertAdjacentHTML(
+      "afterbegin",
+      `<div class="account d-inline-flex
+    mx-2 flex-column">
+    ${user.username} <a id="aCloseSession" href="#">Cerrar sesión</a>
+    </div>`
+    );
+  }
+
+  setUserCookie(user) {
+    setCookie("activeUser", user.username, 1);
+  }
+
+  deleteUserCookie() {
+    setCookie("activeUser", "", 0);
+  }
+
+  removeAdminMenu() {
+    const adminMenu = document.getElementById("menu-admin");
+    if (adminMenu) adminMenu.parentElement.remove();
+  }
+
+  bindCloseSession(handler) {
+    document
+      .getElementById("aCloseSession")
+      .addEventListener("click", (event) => {
+        handler();
+        event.preventDefault();
+      });
+  }
+
+  bindFavoriteDish(toggleFavoriteDish) {
+    const dish = document.querySelector("#favorite-dish");
+    dish.addEventListener("click", (event) => {
+      toggleFavoriteDish(event.currentTarget.dataset.dish);
+      event.preventDefault();
+    });
+  }
+
+  showFavoriteDishes(dishes) {
+    const favoriteDishesContainer = document.getElementById(
+      "favorite-dishes-container"
+    );
+    favoriteDishesContainer.innerHTML = ""; // Limpiamos el contenedor
+
+    if (dishes.length === 0) {
+      favoriteDishesContainer.innerHTML =
+        "<p>No hay platos favoritos seleccionados.</p>";
+    } else {
+      dishes.forEach((dish) => {
+        const dishElement = document.createElement("div");
+        dishElement.classList.add("favorite-dish");
+        dishElement.insertAdjacentHTML(
+          "beforeend",
+          `<div class="card" style="width: 18rem;cursor: pointer" data-dish="${dish.name}">
+        <img src="${dish.image}" class="card-img-top" alt="${dish.description}">
+        <div class="card-body">
+          <h5 class="card-title">${dish.name}</h5>
+          <p class="card-text">${dish.description}</p>
+        </div>
+      </div>`
+        );
+        favoriteDishesContainer.appendChild(dishElement);
+      });
+    }
+  }
+
+  showFavoriteDishesMenu() {
+    let navMenu = document.getElementById("navbarNav");
+    let listNav = navMenu.querySelector("ul.navbar-nav");
+    listNav.insertAdjacentHTML(
+      "beforeend",
+      `<li class="nav-item">
+        <a id="lFavoriteDishes" class="nav-link" href="lFavoriteDishes" role="button" aria-expanded="false">
+          Platos Favoritos
+        </a>
+      </li>`
+    );
+  }
+
+  removeFavoriteDishesMenu() {
+    const adminMenu = document.getElementById("lFavoriteDishes");
+    if (adminMenu) adminMenu.parentElement.remove();
+  }
+
+  bindFavoriteDishMenu(handler) {
+    let linkFavDishes = document.getElementById("lFavoriteDishes");
+    linkFavDishes.addEventListener("click", (event) => {
+      handler();
+      event.preventDefault();
+    });
+  }
+
+  showFavoriteDishes(favoriteDishes) {
+    this.main.replaceChildren();
+    this.categories.replaceChildren();
+
+    const container = document.createElement("div");
+    container.classList.add("container");
+    container.classList.add("my-3");
+    container.id = "favorite-dishes";
+
+    for (const dishString of favoriteDishes) {
+      const dish = JSON.parse(dishString);
+
+      container.insertAdjacentHTML(
+        "beforeend",
+        `<div class="card mb-3">
+          <div class="row g-0">
+            <div class="col-md-4">
+              <img src="${dish.image}" class="img-fluid rounded-start" alt="${dish.name}">
+            </div>
+            <div class="col-md-8">
+              <div class="card-body px-4>
+                <h5 class="card-title" style="font-size:1.8em;"><strong>${dish.name}</strong></h5>
+                <p class="card-text">${dish.description}</p>
+                <p class="card-text"><strong>Ingredientes:</strong> ${dish.ingredients}</p>
+              </div>
+            </div>
+          </div>
+        </div>`
+      );
+    }
+
+    this.main.append(container);
+  }
+
+  showModalAddFavoriteDish(done, dish, error) {
+    const messageModalContainer = document.getElementById("messageModal");
+    const messageModal = new bootstrap.Modal(messageModalContainer);
+
+    const title = document.getElementById("messageModalTitle");
+    title.innerHTML = "Plato añadido a favoritos";
+
+    const body = messageModalContainer.querySelector(".modal-body");
+    body.replaceChildren();
+
+    if (done) {
+      body.insertAdjacentHTML(
+        "afterbegin",
+        `<div class="p-3">El plato <strong>${dish.name}</strong> ha sido añadido a favoritos correctamente.</div>`
+      );
+    } else {
+      body.insertAdjacentHTML(
+        "afterbegin",
+        `<div class="error text-danger p-3"><i class="bi bi-exclamation-triangle"></i> El plato <strong>${dish.name}</strong> no ha sido añadido a favoritos correctamente.</div>`
+      );
+    }
+
+    messageModal.show();
+
+    const listener = (event) => {
+      event.preventDefault();
     };
     messageModalContainer.addEventListener("hidden.bs.modal", listener, {
       once: true,
