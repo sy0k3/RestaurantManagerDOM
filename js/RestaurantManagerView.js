@@ -267,7 +267,8 @@ class RestaurantManagerView {
     hAdminMenu,
     hAdminCategory,
     hNewRest,
-    hModCat
+    hModCat,
+    hgenBackup
   ) {
     const newDishLink = document.getElementById("lnewDish");
     newDishLink.addEventListener("click", (event) => {
@@ -342,6 +343,18 @@ class RestaurantManagerView {
         [],
         "#modify-categories",
         { action: "modCat" },
+        "#",
+        event
+      );
+    });
+
+    const genBackupLink = document.getElementById("lgenBackup");
+    genBackupLink.addEventListener("click", (event) => {
+      this[EXCECUTE_HANDLER](
+        hgenBackup,
+        [],
+        "#generate-bakcup",
+        { action: "genBackup" },
         "#",
         event
       );
@@ -454,26 +467,31 @@ class RestaurantManagerView {
     this.main.appendChild(carouselContainer);
 
     // Creamos una copia del array original para no modificarlo
-    let copy = Array.from(dishes);
+    let copy = [...dishes];
     let randomDishes = [];
 
     // Obtenemos tres elementos aleatorios sin repetir
     for (let i = 0; i < 3; i++) {
-      // Generamos un índice aleatorio dentro del rango válido
       let randomIndex = Math.floor(Math.random() * copy.length);
-      // Añadimos el elemento correspondiente al índice aleatorio al array de elementos aleatorios
-      randomDishes.push(copy.splice(randomIndex, 1)[0]);
+      randomDishes.push(copy[randomIndex]);
+      copy.splice(randomIndex, 1);
     }
 
     let carousel = document.getElementById("carousel");
 
-    for (const dish of randomDishes) {
-      carousel.insertAdjacentHTML(
-        "beforeend",
-        `<div class="carousel-item active">
-        <img src="${dish.image}" class="d-block w-100" alt="${dish.name}" data-dish="${dish.name}"/>
-      </div>`
-      );
+    //Ahora creamos los elementos del carousel
+    try {
+      randomDishes.forEach((dish, index) => {
+        const isActive = index === 0 ? "active" : "";
+        carousel.insertAdjacentHTML(
+          "beforeend",
+          `<div class="carousel-item ${isActive}">
+                <img src="${dish.image}" class="d-block w-100" alt="${dish.name}" data-dish="${dish.name}"/>
+            </div>`
+        );
+      });
+    } catch (error) {
+      console.log(error);
     }
   }
 
@@ -686,6 +704,7 @@ class RestaurantManagerView {
       <li><a id="ladminCategory" class="dropdown-item" href="#ladminCategory">Administrar Categorias</a></li>
       <li><a id="lnewRest" class="dropdown-item" href="#lnewRest">Añadir Restaurante</a></li>
       <li><a id="lmodCat" class="dropdown-item" href="#lmodCat">Modificar Categorías de Platos</a></li>
+      <li><a id="lgenBackup" class="dropdown-item" href="#lgenBackup">Generar Backup</a></li>
       </ul>
     </li>`
     );
