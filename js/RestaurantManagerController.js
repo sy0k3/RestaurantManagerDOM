@@ -689,15 +689,19 @@ class RestaurantManagerController {
     const fechaActual = new Date().toISOString().replace(/:/g, "-");
     const nombreArchivo = `backup_${fechaActual}.json`;
 
-    fetch(`./js/data/${nombreArchivo}`, {
+    const formData = new FormData();
+    const blob = new Blob([jsonString], { type: "application/json" });
+    formData.append("file", blob, nombreArchivo);
+
+    fetch("http://localhost/php/upload.php", {
       method: "POST",
-      body: jsonString,
+      body: formData,
     })
       .then((response) => {
         if (!response.ok) {
           throw new Error("Error al guardar el archivo de respaldo.");
         }
-        console.log("Archivo de respaldo generado correctamente.");
+        console.log("Archivo de respaldo subido correctamente.");
       })
       .catch((error) => {
         console.error("Error:", error);
