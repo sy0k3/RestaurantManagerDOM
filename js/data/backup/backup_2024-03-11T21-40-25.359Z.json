@@ -1,0 +1,128 @@
+{
+  "categorias": [
+    {
+      "name": "Entrantes",
+      "description": "Platos ligeros y sabrosos que se sirven al principio de la comida para abrir el apetito"
+    },
+    {
+      "name": "Primeros",
+      "description": "Platos principales que incluyen carnes, pescados o platos vegetarianos, más abundantes que los primeros"
+    },
+    {
+      "name": "Postres",
+      "description": "Deliciosos dulces y tentadores que se disfrutan al final de la comida para satisfacer el paladar"
+    }
+  ],
+  "platos": [
+    {
+      "name": "Ceviche Peruano",
+      "description": "El ceviche peruano es un plato típico de la gastronomía peruana, elaborado con pescado fresco marinado en jugo de limón, cebolla, ají y cilantro.",
+      "ingredients": ["Pescado fresco", "Limón", "Cebolla", "Ají", "Cilantro"],
+      "image": "https://gestion.pe/resizer/8c1ugDy_313ZNnDVDNxqRCIYHx0=/1200x800/smart/filters:format(jpeg):quality(75)/cloudfront-us-east-1.images.arcpublishing.com/elcomercio/GFXUEOFW5BALVBMB3Y24M6V3XM.jpg"
+    },
+    {
+      "name": "Hamburguesa Clásica",
+      "description": "La hamburguesa clásica es un sándwich elaborado con una carne de hamburguesa a la parrilla, acompañada de lechuga, tomate, cebolla y queso, todo dentro de un pan de hamburguesa.",
+      "ingredients": [
+        "Carne de hamburguesa",
+        "Lechuga",
+        "Tomate",
+        "Cebolla",
+        "Queso",
+        "Pan de hamburguesa"
+      ],
+      "image": "https://www.miguelvergara.com/actualidad/wp-content/uploads/2021/05/front-view-burger-on-stand-1200x800.jpg"
+    },
+    {
+      "name": "Poke Bowl",
+      "description": "El poke bowl es una ensalada de origen hawaiano que se elabora con pescado crudo marinado, arroz, aguacate, pepino, cebolla y algas, todo servido en un bol.",
+      "ingredients": [
+        "Pescado crudo",
+        "Arroz",
+        "Aguacate",
+        "Pepino",
+        "Cebolla",
+        "Algas"
+      ],
+      "image": "https://hips.hearstapps.com/hmg-prod/images/poke-bowl-elle-gourmet-1-1669825719.jpg"
+    },
+    {
+      "name": "Cordero al Horno",
+      "description": "El cordero al horno es un plato tradicional de la cocina mediterránea, consiste en carne de cordero asada lentamente en el horno con hierbas aromáticas y especias.",
+      "ingredients": ["Cordero", "Hierbas aromáticas", "Especias"],
+      "image": "https://content-cocina.lecturas.com/medio/2023/12/11/costillar-de-cordero-al-horno-istock-1400651441_d093155a_231211105736_1200x800.jpg"
+    },
+    {
+      "name": "Sopa de Tomate",
+      "description": "La sopa de tomate es una sopa reconfortante y saludable, elaborada con tomates maduros, cebolla, ajo, caldo de verduras y hierbas aromáticas.",
+      "ingredients": [
+        "Tomates",
+        "Cebolla",
+        "Ajo",
+        "Caldo de verduras",
+        "Hierbas aromáticas"
+      ],
+      "image": "https://assets.elgourmet.com/wp-content/uploads/2023/03/sopa-_wiEKe3BYpGML5Q06HJUyvPOhAbxkzm.png"
+    },
+    {
+      "name": "Tiramisú",
+      "description": "El tiramisú es un postre italiano muy popular que se elabora con capas de bizcochos de soletilla mojados en café, crema de mascarpone y cacao en polvo.",
+      "ingredients": [
+        "Bizcochos de soletilla",
+        "Café",
+        "Mascarpone",
+        "Cacao en polvo"
+      ],
+      "image": "https://cdn-italiani-media.italiani.it/site-italiani/2020/09/tiramisu.jpg"
+    }
+  ],
+  "alergenos": [
+    {
+      "name": "Lácteos",
+      "description": "Alérgeno relacionado con productos lácteos como leche, queso y mantequilla"
+    },
+    {
+      "name": "Moluscos",
+      "description": "Alérgeno relacionado con moluscos como almejas, mejillones y calamares"
+    },
+    {
+      "name": "Gluten",
+      "description": "Alérgeno relacionado con el gluten, presente en trigo, cebada y centeno, entre otros"
+    },
+    {
+      "name": "Crustaceos",
+      "description": "Alérgeno relacionado con crustáceos como langostas, camarones y cangrejos"
+    }
+  ],
+  "menus": [
+    {
+      "name": "Oriental",
+      "description": "Este menu ofrece una distina variacion de platos de origen asiatico conprendiendo un entrante o ensalada, un principal y postre"
+    },
+    {
+      "name": "Diario",
+      "description": "Una variedad de platos equilibrados y nutritivos, perfectos para disfrutar en el día a día"
+    },
+    {
+      "name": "Mar y Montaña",
+      "description": "Una combinación única de ingredientes del mar y de la tierra, que ofrece una experiencia culinaria sorprendente"
+    }
+  ],
+  "restaurantes": [
+    {
+      "name": "Restaurante Takara",
+      "description": "Restaurante de platos con tematica oriental",
+      "location": { "latitude": -89.654654, "longitude": -89.23323 }
+    },
+    {
+      "name": "Celler de Can Roca",
+      "description": "Un referente mundial en la alta cocina, con una propuesta culinaria sofisticada y una experiencia gastronómica incomparable",
+      "location": { "latitude": -89.654654, "longitude": -89.23323 }
+    },
+    {
+      "name": "Arab Palace",
+      "description": "Un lugar único que te transportará a Oriente con su temática oriental y una selección exquisita de platos inspirados en la cocina asiática",
+      "location": { "latitude": -89.654654, "longitude": -89.23323 }
+    }
+  ]
+}

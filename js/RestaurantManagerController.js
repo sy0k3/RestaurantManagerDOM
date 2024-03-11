@@ -30,7 +30,6 @@ class RestaurantManagerController {
   }
 
   loadData(data) {
-    console.log(data);
     if (data) {
       const categorias = data.categorias;
       const platos = data.platos;
@@ -47,8 +46,6 @@ class RestaurantManagerController {
           plato.imagen
         );
         this[MODEL].addDish(nuevoPlato);
-        console.log(plato);
-        console.log(nuevoPlato);
       });
 
       // Añade las categorías al modelo y asigna platos a categorías
@@ -81,7 +78,6 @@ class RestaurantManagerController {
       menus.forEach((menu) => {
         const nuevoMenu = new Menu(menu.nombre, menu.descripcion);
         this[MODEL].addMenu(nuevoMenu);
-        // Asigna platos al menú (suponiendo que hay una lista de nombres de platos en la propiedad 'platos' de cada menú)
         menu.platos.forEach((name) => {
           const dish = this[MODEL].getDish(name);
           this[MODEL].assignDishToMenu(nuevoMenu, dish);
@@ -693,7 +689,7 @@ class RestaurantManagerController {
     const blob = new Blob([jsonString], { type: "application/json" });
     formData.append("file", blob, nombreArchivo);
 
-    fetch("http://localhost/php/upload.php", {
+    fetch("http://localhost/RestaurantManagerDOM/php/upload.php", {
       method: "POST",
       body: formData,
     })
