@@ -35,7 +35,6 @@ class RestaurantManagerView {
   ) {
     handler(...handlerArguments);
     const scroll = document.querySelector(scrollElement);
-    console.log(scroll);
     if (scroll) scroll.scrollIntoView();
     history.pushState(data, null, url);
     event.preventDefault();
@@ -130,9 +129,9 @@ class RestaurantManagerView {
         this[EXCECUTE_HANDLER](
           handler,
           [allergen],
-          "body",
+          "#menu-allergens",
           { action: "dishesAllergenList", allergen },
-          "#allergen-list",
+          "#allergen-list-dish",
           event
         );
       });
@@ -147,9 +146,9 @@ class RestaurantManagerView {
         this[EXCECUTE_HANDLER](
           handler,
           [menu],
-          "body",
+          "#menu-menus",
           { action: "dishesMenuList", menu },
-          "#menu-list",
+          "#menu-list-dish",
           event
         );
       });
@@ -197,7 +196,7 @@ class RestaurantManagerView {
         [],
         "body",
         { action: "showAllergens" },
-        "#",
+        "#menu-allergen",
         event
       );
     });
@@ -210,7 +209,7 @@ class RestaurantManagerView {
         [],
         "body",
         { action: "showMenus" },
-        "#",
+        "#menu-menus",
         event
       );
     });
@@ -240,7 +239,7 @@ class RestaurantManagerView {
 
       if (!newWindow || newWindow.closed) {
         newWindow = window.open(
-          "../element.html",
+          "./element.html",
           name,
           "width=800,height=600, top=250, left=250, titlebar=yes, toolbar=no,menubar=no, location=no"
         );
@@ -604,7 +603,7 @@ class RestaurantManagerView {
     for (const allergen of allergens) {
       container.insertAdjacentHTML(
         "beforeend",
-        `<div class="col-lg-3 col-md-6"><a data-allergen="${allergen.name}" href="#allergen-list" style="text-decoration: none; color: orange; cursor: pointer">
+        `<div class="col-lg-3 col-md-6"><a data-allergen="${allergen.name}" href="#allergen-list-dish" style="text-decoration: none; color: orange; cursor: pointer">
         <div class="cat-list-text">
           <h2>${allergen.name}</h2>
           <div>${allergen.description}</div>
@@ -628,7 +627,7 @@ class RestaurantManagerView {
     for (const menu of menus) {
       container.insertAdjacentHTML(
         "beforeend",
-        `<div class="col-lg-3 col-md-6"><a data-menu="${menu.name}" href="#menu-list" style="text-decoration: none; color: orange; cursor: pointer">
+        `<div class="col-lg-3 col-md-6"><a data-menu="${menu.name}" href="#menu-list-dish" style="text-decoration: none; color: orange; cursor: pointer">
         <div class="cat-list-text">
           <h2>${menu.name}</h2>
           <div>${menu.description}</div>

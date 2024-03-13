@@ -39,6 +39,14 @@ const historyActions = {
     RestaurantManagerApp.handleShowDishCard(event.state.dish);
   },
 
+  showAllergens: () => {
+    RestaurantManagerApp.handleAllergen();
+  },
+
+  showMenus: () => {
+    RestaurantManagerApp.handleMenu();
+  },
+
   dishesAllergenList: (event) => {
     RestaurantManagerApp.handleShowDishWithAllergen(event.state.allergen);
   },
