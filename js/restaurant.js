@@ -59,6 +59,34 @@ const historyActions = {
     RestaurantManagerApp.handleShowRestaurantCard(event.state.restaurant);
   },
 
+  newDish: () => {
+    ManagerApp.handleNewDishForm();
+  },
+
+  removeDish: () => {
+    ManagerApp.handleRemoveDishForm();
+  },
+
+  adminMenu: () => {
+    ManagerApp.handlerAdminMenu();
+  },
+
+  adminCategory: () => {
+    ManagerApp.handleAdminCategoryForm();
+  },
+
+  newRest: () => {
+    ManagerApp.handleNewRestForm();
+  },
+
+  modCat: () => {
+    ManagerApp.handleModifyCatForm();
+  },
+
+  genBackup: () => {
+    ManagerApp.generateBackup();
+  },
+
   login: () => ManagerApp.handleLoginForm(),
 };
 

@@ -274,9 +274,9 @@ class RestaurantManagerView {
       this[EXCECUTE_HANDLER](
         hNewDish,
         [],
-        "#new-dish",
+        "body",
         { action: "newDish" },
-        "#",
+        "#lnewDish",
         event
       );
     });
@@ -286,11 +286,11 @@ class RestaurantManagerView {
       this[EXCECUTE_HANDLER](
         hRemoveDish,
         [],
-        "#remove-dish",
+        "#",
         {
           action: "removeDish",
         },
-        "#",
+        "#ldelDish",
         event
       );
     });
@@ -300,11 +300,11 @@ class RestaurantManagerView {
       this[EXCECUTE_HANDLER](
         hAdminMenu,
         [],
-        "#admin-menu",
+        "#",
         {
           action: "adminMenu",
         },
-        "#",
+        "#ladminMenu",
         event
       );
     });
@@ -314,11 +314,11 @@ class RestaurantManagerView {
       this[EXCECUTE_HANDLER](
         hAdminCategory,
         [],
-        "#admin-category",
+        "#",
         {
           action: "adminCategory",
         },
-        "#",
+        "#ladminCategory",
         event
       );
     });
@@ -328,9 +328,9 @@ class RestaurantManagerView {
       this[EXCECUTE_HANDLER](
         hNewRest,
         [],
-        "#new-restaurant",
-        { action: "newRest" },
         "#",
+        { action: "newRest" },
+        "#lnewRest",
         event
       );
     });
@@ -340,9 +340,9 @@ class RestaurantManagerView {
       this[EXCECUTE_HANDLER](
         hModCat,
         [],
-        "#modify-categories",
-        { action: "modCat" },
         "#",
+        { action: "modCat" },
+        "#lmodCat",
         event
       );
     });
@@ -352,9 +352,9 @@ class RestaurantManagerView {
       this[EXCECUTE_HANDLER](
         hgenBackup,
         [],
-        "#generate-bakcup",
-        { action: "genBackup" },
         "#",
+        { action: "genBackup" },
+        "#lgenBackup",
         event
       );
     });
