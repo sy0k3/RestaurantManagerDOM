@@ -31,11 +31,15 @@ body {
 }
 
 .navbar {
-  font-size: 1.8em;
-  margin-left: 60px;
+  font-size: 1em;
+  margin: auto auto;
+  margin-bottom: 2vh;
   display: flex;
   justify-content: space-around;
   align-items: center;
+
+  background-color: #000000b3;
+  box-shadow: -1px 9px 31px 1px #000000bf;
 }
 
 .navbar-brand img {
@@ -219,4 +223,18 @@ span {
 
 .container.h-100 {
   margin: 2em auto;
+}
+
+.custom-control {
+  display: flex;
+}
+
+.custom-control-label,
+.custom-control-input {
+  margin-bottom: 0;
+  margin-left: 5px;
+}
+
+.input-group-text {
+  margin-bottom: 0;
 }

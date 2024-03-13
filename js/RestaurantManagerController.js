@@ -39,7 +39,7 @@ class RestaurantManagerController {
 
       // Añade platos al modelo
       platos.forEach((plato) => {
-        const nuevoPlato = new Dish(
+        const nuevoPlato = this[MODEL].getDishObject(
           plato.nombre,
           plato.descripcion,
           plato.ingredientes,
@@ -50,7 +50,7 @@ class RestaurantManagerController {
 
       // Añade las categorías al modelo y asigna platos a categorías
       categorias.forEach((categoria) => {
-        const nuevaCategoria = new Category(
+        const nuevaCategoria = this[MODEL].getCategoryObject(
           categoria.nombre,
           categoria.descripcion
         );
@@ -63,7 +63,7 @@ class RestaurantManagerController {
 
       // Añade alérgenos al modelo y asigna alérgenos a platos
       alergenos.forEach((alergeno) => {
-        const nuevoAlergeno = new Allergen(
+        const nuevoAlergeno = this[MODEL].getAllergenObject(
           alergeno.nombre,
           alergeno.descripcion
         );
@@ -76,7 +76,10 @@ class RestaurantManagerController {
 
       // Añade menús al modelo y asigna platos a menús
       menus.forEach((menu) => {
-        const nuevoMenu = new Menu(menu.nombre, menu.descripcion);
+        const nuevoMenu = this[MODEL].getMenuObject(
+          menu.nombre,
+          menu.descripcion
+        );
         this[MODEL].addMenu(nuevoMenu);
         menu.platos.forEach((name) => {
           const dish = this[MODEL].getDish(name);
@@ -90,7 +93,7 @@ class RestaurantManagerController {
           restaurante.coordenadas.latitud,
           restaurante.coordenadas.longitud
         );
-        const nuevoRestaurante = new Restaurant(
+        const nuevoRestaurante = this[MODEL].getRestaurantObject(
           restaurante.nombre,
           restaurante.descripcion,
           coordenadas
@@ -624,6 +627,34 @@ class RestaurantManagerController {
       this[FAVORITE_DISHES] = JSON.parse(storedFavoriteDishes);
     }
     this[VIEW].showFavoriteDishes(this[FAVORITE_DISHES]);
+    this[VIEW].bindRemoveFavDish(this.removeFavoriteDish);
+  };
+
+  removeFavoriteDish = (name) => {
+    let done;
+    let error;
+    let dish;
+    try {
+      dish = this[MODEL].getDish(name);
+      const index = this[FAVORITE_DISHES].findIndex(
+        (favDish) => JSON.parse(favDish).name === dish.name
+      );
+      console.log(index);
+      this[FAVORITE_DISHES].splice(index, 1);
+      console.log("plato borrado");
+      console.log(this[FAVORITE_DISHES]);
+      localStorage.setItem(
+        "favoriteDishes",
+        JSON.stringify(this[FAVORITE_DISHES])
+      );
+
+      done = true;
+    } catch (exception) {
+      done = false;
+      error = exception;
+    }
+
+    this[VIEW].showModalRemFavDish(done, dish, error);
   };
 
   generateBackup = () => {
@@ -635,7 +666,6 @@ class RestaurantManagerController {
       restaurantes: [],
     };
 
-    // Categorías
     for (const category of this[MODEL].categories) {
       data.categorias.push({
         name: category.name,
@@ -643,7 +673,6 @@ class RestaurantManagerController {
       });
     }
 
-    // Platos
     for (const dish of this[MODEL].dishes) {
       data.platos.push({
         name: dish.name,
@@ -653,7 +682,6 @@ class RestaurantManagerController {
       });
     }
 
-    // Alergenos
     for (const allergen of this[MODEL].allergens) {
       data.alergenos.push({
         name: allergen.name,
@@ -661,7 +689,6 @@ class RestaurantManagerController {
       });
     }
 
-    // Menus
     for (const menu of this[MODEL].menus) {
       data.menus.push({
         name: menu.name,
@@ -669,7 +696,6 @@ class RestaurantManagerController {
       });
     }
 
-    // Restaurantes
     for (const restaurant of this[MODEL].restaurants) {
       data.restaurantes.push({
         name: restaurant.name,
@@ -680,6 +706,7 @@ class RestaurantManagerController {
         },
       });
     }
+
     const jsonString = JSON.stringify(data);
 
     const fechaActual = new Date().toISOString().replace(/:/g, "-");

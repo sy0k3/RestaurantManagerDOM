@@ -338,8 +338,13 @@ let RestaurantManager = (function () {
           return element.category.name === name;
         }
 
-        return this.#categories[this.#categories.findIndex(compareElements)]
-          .category;
+        let index = this.#categories.findIndex(compareElements);
+
+        if (index != -1) {
+          return this.#categories[index].category;
+        } else {
+          return index;
+        }
       }
 
       //Dado un alergeno, devuelve la posición de esa categoría en el array de categorías o -1 si no lo encontramos.
@@ -367,8 +372,13 @@ let RestaurantManager = (function () {
           return element.allergen.name === name;
         }
 
-        return this.#allergens[this.#allergens.findIndex(compareElements)]
-          .allergen;
+        let index = this.#allergens.findIndex(compareElements);
+
+        if (index != -1) {
+          return this.#allergens[index].allergen;
+        } else {
+          return index;
+        }
       }
 
       //Dado un menu, devuelve la posición de esa categoría en el array de categorías o -1 si no lo encontramos.
@@ -396,7 +406,13 @@ let RestaurantManager = (function () {
           return element.menu.name === name;
         }
 
-        return this.#menus[this.#menus.findIndex(compareElements)].menu;
+        let index = this.#menus.findIndex(compareElements);
+
+        if (index != -1) {
+          return this.#menus[index].menu;
+        } else {
+          return index;
+        }
       }
 
       //Dado un restaurante, devuelve la posición de esa categoría en el array de categorías o -1 si no lo encontramos.
@@ -425,7 +441,14 @@ let RestaurantManager = (function () {
         function compareElements(element) {
           return element.name === name;
         }
-        return this.#restaurants[this.#restaurants.findIndex(compareElements)];
+
+        let index = this.#restaurants.findIndex(compareElements);
+
+        if (index != -1) {
+          return this.#restaurants[index];
+        } else {
+          return index;
+        }
       }
 
       //Dado un plato, devuelve la posición de esa categoría en el array de categorías o -1 si no lo encontramos.
@@ -499,7 +522,14 @@ let RestaurantManager = (function () {
         function compareElements(element) {
           return element.name === name;
         }
-        return this.#dishes[this.#dishes.findIndex(compareElements)];
+
+        let index = this.#dishes.findIndex(compareElements);
+
+        if (index != -1) {
+          return this.#dishes[index];
+        } else {
+          return index;
+        }
       }
 
       //Devuelve un iterator de los categorias del gestor
@@ -1236,6 +1266,46 @@ let RestaurantManager = (function () {
         } else {
           return this.#restaurants[posRestaurant].restaurant;
         }
+      }
+
+      getCategoryObject(name, description = "") {
+        let cat = this.getCategory(name);
+        if (cat == -1) {
+          cat = new Category(name, description);
+        }
+        return cat;
+      }
+
+      getAllergenObject(name, description = "") {
+        let al = this.getAllergen(name);
+        if (al == -1) {
+          al = new Allergen(name, description);
+        }
+        return al;
+      }
+
+      getMenuObject(name, description = "") {
+        let menu = this.getMenu(name);
+        if (menu == -1) {
+          menu = new Menu(name, description);
+        }
+        return menu;
+      }
+
+      getRestaurantObject(name, description = "", location = new Coordinate()) {
+        let rest = this.getRestaurant(name);
+        if (rest == -1) {
+          rest = new Restaurant(name, description, location);
+        }
+        return rest;
+      }
+
+      getDishObject(name, description = "", ingredients = [], image = "") {
+        let dish = this.getDish(name);
+        if (dish == -1) {
+          dish = new Dish(name, description, ingredients, image);
+        }
+        return dish;
       }
     }
 

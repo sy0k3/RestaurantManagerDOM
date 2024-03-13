@@ -1871,7 +1871,7 @@ class RestaurantManagerView {
     userArea.insertAdjacentHTML(
       "afterbegin",
       `<div class="account d-inline-flex mx-1n">
-    <a id="login" href="#"><i class="bi bi-person-circle" ariahidden="true"></i> Identificate</a>
+    <a id="login" class="link-warning link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" href="#"><i class="bi bi-person-circle" ariahidden="true"></i> Identificate</a>
     </div>`
     );
   }
@@ -1932,6 +1932,7 @@ class RestaurantManagerView {
   }
 
   showInvalidUserMessage() {
+    this.categories.replaceChildren();
     this.categories.insertAdjacentHTML(
       "beforeend",
       `<div class="container my3"><div class="alert alert-warning" role="alert">
@@ -1954,7 +1955,7 @@ class RestaurantManagerView {
       "afterbegin",
       `<div class="account d-inline-flex
     mx-2 flex-column">
-    ${user.username} <a id="aCloseSession" href="#">Cerrar sesión</a>
+    ${user.username.toUpperCase()} <a id="aCloseSession" href="#" class="link-warning link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">Cerrar sesión</a>
     </div>`
     );
   }
@@ -1989,43 +1990,15 @@ class RestaurantManagerView {
     });
   }
 
-  showFavoriteDishes(dishes) {
-    const favoriteDishesContainer = document.getElementById(
-      "favorite-dishes-container"
-    );
-    favoriteDishesContainer.innerHTML = ""; // Limpiamos el contenedor
-
-    if (dishes.length === 0) {
-      favoriteDishesContainer.innerHTML =
-        "<p>No hay platos favoritos seleccionados.</p>";
-    } else {
-      dishes.forEach((dish) => {
-        const dishElement = document.createElement("div");
-        dishElement.classList.add("favorite-dish");
-        dishElement.insertAdjacentHTML(
-          "beforeend",
-          `<div class="card" style="width: 18rem;cursor: pointer" data-dish="${dish.name}">
-        <img src="${dish.image}" class="card-img-top" alt="${dish.description}">
-        <div class="card-body">
-          <h5 class="card-title">${dish.name}</h5>
-          <p class="card-text">${dish.description}</p>
-        </div>
-      </div>`
-        );
-        favoriteDishesContainer.appendChild(dishElement);
-      });
-    }
-  }
-
   showFavoriteDishesMenu() {
     let navMenu = document.getElementById("navbarNav");
     let listNav = navMenu.querySelector("ul.navbar-nav");
     listNav.insertAdjacentHTML(
       "beforeend",
       `<li class="nav-item">
-        <a id="lFavoriteDishes" class="nav-link" href="lFavoriteDishes" role="button" aria-expanded="false">
+        <button type="button" id="lFavoriteDishes" class="nav-link" href="lFavoriteDishes" role="button" aria-expanded="false">
           Platos Favoritos
-        </a>
+        </button>
       </li>`
     );
   }
@@ -2067,6 +2040,7 @@ class RestaurantManagerView {
                 <h5 class="card-title" style="font-size:1.8em;"><strong>${dish.name}</strong></h5>
                 <p class="card-text">${dish.description}</p>
                 <p class="card-text"><strong>Ingredientes:</strong> ${dish.ingredients}</p>
+                <button type="button" id="remFavDish" data-dish="${dish.name}" class="btn btn-primary">Remover de favoritos</button>
               </div>
             </div>
           </div>
@@ -2075,6 +2049,16 @@ class RestaurantManagerView {
     }
 
     this.main.append(container);
+  }
+
+  bindRemoveFavDish(handler) {
+    const lRemFavDish = document.querySelectorAll("#remFavDish");
+    for (const link of lRemFavDish) {
+      link.addEventListener("click", (event) => {
+        handler(event.currentTarget.dataset.dish);
+        event.preventDefault();
+      });
+    }
   }
 
   showModalAddFavoriteDish(done, dish, error) {
@@ -2103,6 +2087,43 @@ class RestaurantManagerView {
 
     const listener = (event) => {
       event.preventDefault();
+    };
+    messageModalContainer.addEventListener("hidden.bs.modal", listener, {
+      once: true,
+    });
+  }
+
+  showModalRemFavDish(done, dish, error) {
+    const messageModalContainer = document.getElementById("messageModal");
+    const messageModal = new bootstrap.Modal(messageModalContainer);
+
+    const title = document.getElementById("messageModalTitle");
+    title.innerHTML = "Categoría eliminada";
+
+    const body = messageModalContainer.querySelector(".modal-body");
+    body.replaceChildren();
+
+    if (done) {
+      body.insertAdjacentHTML(
+        "afterbegin",
+        `<div class="p-3">El plato <strong>${dish.name}</strong> ha sido eliminado de favoritos correctamente.</div>`
+      );
+    } else {
+      body.insertAdjacentHTML(
+        "afterbegin",
+        `<div class="error text-danger p-3"><i class="bi bi-exclamation-triangle"></i> El plato <strong>${dish.name}</strong> no ha podido borrarse de favoritos correctamente.</div>`
+      );
+    }
+
+    messageModal.show();
+
+    const listener = (event) => {
+      event.preventDefault();
+      if (done) {
+        const btnRemoveDish = document.getElementById("remFavDish");
+
+        btnRemoveDish.parentElement.parentElement.parentElement.parentElement.remove();
+      }
     };
     messageModalContainer.addEventListener("hidden.bs.modal", listener, {
       once: true,
