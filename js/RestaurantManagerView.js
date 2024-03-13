@@ -652,14 +652,40 @@ class RestaurantManagerView {
   showRestaurantCard(restaurant) {
     this.categories.replaceChildren();
     this.main.replaceChildren();
+
     this.main.insertAdjacentHTML(
       "beforeend",
       `<div class="card" style="width: 18rem;" data-restaurant="${restaurant.name}">
         <div class="card-header h2">${restaurant.name}</div>
-        <ul class="list-group list-group-flush">
+        <ul id="restaurant-info" class="list-group list-group-flush">
           <li class="list-group-item">${restaurant.description}</li>
-          <li class="list-group-item">Latitud: ${restaurant.location.latitude}, Longitud: ${restaurant.location.longitude}</li>
         </ul>
+      </div>`
+    );
+
+    const restInfo = this.main.querySelector("#restaurant-info");
+    restInfo.insertAdjacentHTML(
+      "beforeend",
+      '<div class="container"><div class="m-4" id="mapid"></div></div>'
+    );
+    const mapContainer = document.getElementById("mapid");
+    mapContainer.style.height = "350px";
+    mapContainer.style.border = "2px solid #faa541";
+
+    let map = L.map("mapid").setView(
+      [restaurant.location.latitude, restaurant.location.longitude],
+      20
+    );
+
+    L.tileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution:
+        'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BYSA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>',
+      maxZoom: 25,
+    }).addTo(map);
+
+    this.main.insertAdjacentHTML(
+      "beforeend",
+      `</ul>
       </div>`
     );
   }

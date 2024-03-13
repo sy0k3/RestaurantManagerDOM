@@ -193,17 +193,17 @@
     {
       "nombre": "Restaurante Takara",
       "descripcion": "Restaurante de platos con tematica oriental",
-      "coordenadas": { "latitud": -89.654654, "longitud": -89.23323 }
+      "coordenadas": { "latitud": 38.983356, "longitud": -3.928629 }
     },
     {
       "nombre": "Celler de Can Roca",
       "descripcion": "Un referente mundial en la alta cocina, con una propuesta culinaria sofisticada y una experiencia gastronómica incomparable",
-      "coordenadas": { "latitud": -89.654654, "longitud": -89.23323 }
+      "coordenadas": { "latitud": 38.983356, "longitud": -3.928629 }
     },
     {
       "nombre": "Arab Palace",
       "descripcion": "Un lugar único que te transportará a Oriente con su temática oriental y una selección exquisita de platos inspirados en la cocina asiática",
-      "coordenadas": { "latitud": -89.654654, "longitud": -89.23323 }
+      "coordenadas": { "latitud": 38.983356, "longitud": -3.928629 }
     }
   ]
 }
